@@ -82,9 +82,9 @@ export function Negocios() {
           </div>
         </Reveal>
 
-        <div className="mt-12 -mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 lg:grid-cols-3">
+        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {negocios.map((n, i) => (
-            <Reveal key={n.id} delay={i * 80} className="min-w-[80%] snap-start sm:min-w-0">
+            <Reveal key={n.id} delay={i * 80}>
               <article className="group h-full overflow-hidden rounded-2xl bg-card shadow-soft transition-shadow duration-300 hover:shadow-lift">
                 <div className="relative overflow-hidden">
                   <img

@@ -45,9 +45,9 @@ export function Historias() {
           </p>
         </Reveal>
 
-        <div className="mt-12 -mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-2 sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0">
+        <div className="mt-12 grid gap-5 sm:grid-cols-3">
           {historias.map((h, i) => (
-            <Reveal key={h.id} delay={i * 90} className="min-w-[78%] snap-start sm:min-w-0">
+            <Reveal key={h.id} delay={i * 90}>
               <button className="group block w-full overflow-hidden rounded-2xl text-left">
                 <span className="relative block aspect-[3/4] overflow-hidden rounded-2xl">
                   <img

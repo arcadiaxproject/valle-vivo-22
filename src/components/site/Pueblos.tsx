@@ -31,9 +31,9 @@ export function Pueblos() {
           </div>
         </Reveal>
 
-        <div className="mt-12 -mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-2 sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0">
+        <div className="mt-12 grid gap-5 sm:grid-cols-3">
           {pueblos.map((p, i) => (
-            <Reveal key={p.nombre} delay={i * 80} className="min-w-[78%] snap-start sm:min-w-0">
+            <Reveal key={p.nombre} delay={i * 80}>
               <a href="#mapa" className="group block overflow-hidden rounded-2xl bg-card shadow-soft transition-shadow duration-300 hover:shadow-lift">
                 <span className="block aspect-[4/5] overflow-hidden">
                   <img
