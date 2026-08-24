@@ -12,7 +12,7 @@ import {
   UserRound,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
-import { fetchMiNegocio } from "@/lib/negocios";
+import { fetchMiNegocio, type Negocio } from "@/lib/negocios";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Footer";
 import { MiNegocioDialog } from "@/components/site/MiNegocioDialog";
@@ -170,97 +170,7 @@ function CuentaPage() {
           {profile?.role === "comercio" && (
             <div className="mt-6 overflow-hidden rounded-2xl border border-border bg-card shadow-soft">
               {miNegocio ? (
-                <>
-                  <div className="relative">
-                    {miNegocio.imagen ? (
-                      <img
-                        src={miNegocio.imagen}
-                        alt={miNegocio.nombre}
-                        width={960}
-                        height={420}
-                        className="h-56 w-full object-cover sm:h-64"
-                      />
-                    ) : (
-                      <div className="flex h-56 w-full items-center justify-center bg-secondary sm:h-64">
-                        <Store className="size-8 text-muted-foreground" />
-                      </div>
-                    )}
-                    <div className="absolute inset-0 bg-[linear-gradient(to_top,oklch(0.14_0.02_60/0.75),transparent_55%)]" />
-                    <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-6">
-                      <div className="min-w-0">
-                        <p className="text-xs font-semibold uppercase tracking-widest text-primary-foreground/70">
-                          {miNegocio.categoria} · {miNegocio.municipio}
-                        </p>
-                        <h2 className="mt-1 truncate text-2xl font-semibold text-primary-foreground">
-                          {miNegocio.nombre}
-                        </h2>
-                      </div>
-                      <MiNegocioDialog>
-                        <button className="shrink-0 rounded-lg bg-primary-foreground px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-primary-foreground/90">
-                          Editar
-                        </button>
-                      </MiNegocioDialog>
-                    </div>
-                  </div>
-
-                  <div className="p-6">
-                    <p className="text-sm leading-relaxed text-muted-foreground">
-                      {miNegocio.descripcion}
-                    </p>
-
-                    {miNegocio.fotos.length > 0 && (
-                      <div className="mt-6">
-                        <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-                          <Images className="size-3.5" />
-                          Galería · {miNegocio.fotos.length}{" "}
-                          {miNegocio.fotos.length === 1 ? "foto" : "fotos"}
-                        </p>
-                        <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4">
-                          {miNegocio.fotos.map((url) => (
-                            <img
-                              key={url}
-                              src={url}
-                              alt=""
-                              width={200}
-                              height={200}
-                              loading="lazy"
-                              className="aspect-square w-full rounded-lg object-cover"
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {miNegocio.video_url && (
-                      <div className="mt-6">
-                        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-                          Vídeo
-                        </p>
-                        <video
-                          src={miNegocio.video_url}
-                          controls
-                          className="mt-3 w-full rounded-lg"
-                        />
-                      </div>
-                    )}
-
-                    {miNegocio.audio_url && (
-                      <div className="mt-6">
-                        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-                          Audio
-                        </p>
-                        <audio src={miNegocio.audio_url} controls className="mt-3 w-full" />
-                      </div>
-                    )}
-
-                    {miNegocio.fotos.length === 0 && !miNegocio.video_url && !miNegocio.audio_url && (
-                      <p className="mt-6 rounded-lg border border-dashed border-border p-4 text-sm text-muted-foreground">
-                        Todavía no has añadido fotos extra, vídeo ni audio a tu ficha. Pulsa
-                        "Editar" para completarla.
-                      </p>
-                    )}
-                  </div>
-                </>
+                <PerfilNegocioAirbnb negocio={miNegocio} />
               ) : (
                 <div className="p-6">
                   <div className="flex items-start gap-4">
@@ -318,5 +228,124 @@ function CuentaPage() {
       </main>
       <Footer />
     </>
+  );
+}
+
+function PerfilNegocioAirbnb({ negocio }: { negocio: Negocio }) {
+  const galeria = [negocio.imagen, ...negocio.fotos].filter((u): u is string => Boolean(u));
+  const hero = galeria.slice(0, 5);
+  const extra = galeria.slice(5);
+
+  return (
+    <div className="p-6">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="min-w-0">
+          <h2 className="text-2xl font-semibold">{negocio.nombre}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {negocio.categoria} · {negocio.municipio}
+            {negocio.abierto !== null && (
+              <>
+                {" · "}
+                <span className={negocio.abierto ? "text-forest" : "text-earth"}>
+                  {negocio.abierto ? "Abierto ahora" : "Cerrado"}
+                </span>
+              </>
+            )}
+          </p>
+        </div>
+        <MiNegocioDialog>
+          <button className="shrink-0 rounded-lg border border-border px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-secondary">
+            Editar
+          </button>
+        </MiNegocioDialog>
+      </div>
+
+      {/* Galería estilo Airbnb: una foto grande + hasta 4 pequeñas */}
+      {hero.length > 0 ? (
+        <div
+          className="mt-5 grid grid-cols-4 grid-rows-2 gap-1.5 overflow-hidden rounded-xl"
+          style={{ aspectRatio: "16 / 8" }}
+        >
+          <img src={hero[0]} alt="" className="col-span-2 row-span-2 size-full object-cover" />
+          {hero.slice(1).map((url) => (
+            <img key={url} src={url} alt="" className="size-full object-cover" />
+          ))}
+        </div>
+      ) : (
+        <div className="mt-5 flex h-48 items-center justify-center rounded-xl bg-secondary">
+          <Store className="size-8 text-muted-foreground" />
+        </div>
+      )}
+
+      {extra.length > 0 && (
+        <div className="mt-2 grid grid-cols-4 gap-1.5 sm:grid-cols-6">
+          {extra.map((url) => (
+            <img
+              key={url}
+              src={url}
+              alt=""
+              className="aspect-square w-full rounded-lg object-cover"
+            />
+          ))}
+        </div>
+      )}
+
+      <div className="mt-6 grid gap-8 border-t border-border pt-6 lg:grid-cols-[1fr_16rem]">
+        <div className="min-w-0 space-y-6">
+          <div>
+            <h3 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+              Descripción
+            </h3>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              {negocio.descripcion}
+            </p>
+          </div>
+
+          {negocio.video_url && (
+            <div>
+              <h3 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+                Vídeo
+              </h3>
+              <video src={negocio.video_url} controls className="mt-2 w-full rounded-lg" />
+            </div>
+          )}
+
+          {negocio.audio_url && (
+            <div>
+              <h3 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+                Audio
+              </h3>
+              <audio src={negocio.audio_url} controls className="mt-2 w-full" />
+            </div>
+          )}
+        </div>
+
+        <aside className="h-fit rounded-xl border border-border p-5">
+          <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+            <Images className="size-3.5" />
+            Ficha
+          </p>
+          <dl className="mt-3 space-y-2.5 text-sm">
+            <div className="flex justify-between gap-3">
+              <dt className="text-muted-foreground">Categoría</dt>
+              <dd className="font-semibold">{negocio.categoria}</dd>
+            </div>
+            <div className="flex justify-between gap-3">
+              <dt className="text-muted-foreground">Municipio</dt>
+              <dd className="font-semibold">{negocio.municipio}</dd>
+            </div>
+            <div className="flex justify-between gap-3">
+              <dt className="text-muted-foreground">Fotos</dt>
+              <dd className="font-semibold">{galeria.length}</dd>
+            </div>
+          </dl>
+          <MiNegocioDialog>
+            <button className="mt-4 w-full rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90">
+              Editar mi negocio
+            </button>
+          </MiNegocioDialog>
+        </aside>
+      </div>
+    </div>
   );
 }
