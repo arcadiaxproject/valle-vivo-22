@@ -159,7 +159,7 @@ export function Historias() {
   return (
     <section
       id="historias"
-      className="relative flex h-screen flex-col justify-center overflow-hidden bg-bark py-10 sm:py-14"
+      className="relative flex flex-col justify-center overflow-hidden bg-bark py-16 sm:h-screen sm:py-14"
     >
       <img
         src={fondoHistorias}

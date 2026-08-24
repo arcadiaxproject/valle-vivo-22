@@ -13,7 +13,7 @@ export function Pueblos() {
   return (
     <section
       id="pueblos"
-      className="relative flex h-screen flex-col justify-center overflow-hidden py-10 text-primary-foreground sm:py-14"
+      className="relative flex flex-col justify-center overflow-hidden py-16 text-primary-foreground sm:h-screen sm:py-14"
     >
       <img
         src={p2}
