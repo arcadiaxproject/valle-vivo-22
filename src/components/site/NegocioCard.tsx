@@ -21,7 +21,7 @@ export function NegocioCard({ n, delay = 0 }: { n: Negocio; delay?: number }) {
       <Link
         to="/negocio/$id"
         params={{ id: n.id }}
-        className="group block h-full overflow-hidden rounded-2xl bg-card shadow-soft transition-shadow duration-300 hover:shadow-lift"
+        className="group block h-full overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:border-terracotta/40 hover:shadow-lift"
       >
         <div className="relative overflow-hidden">
           <img

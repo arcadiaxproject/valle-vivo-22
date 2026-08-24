@@ -5,7 +5,7 @@ export function CtaNegocios() {
     <section className="flex min-h-screen flex-col justify-center bg-background py-24 sm:py-32">
       <div className="container-page">
         <Reveal>
-          <div className="rounded-3xl bg-forest-deep px-8 py-16 text-primary-foreground sm:px-16 sm:py-24">
+          <div className="rounded-3xl bg-bark px-8 py-16 text-primary-foreground sm:px-16 sm:py-24">
             <h2 className="max-w-2xl text-4xl font-extrabold leading-[1.03] sm:text-5xl">
               Tu negocio también forma parte de esta historia.
             </h2>

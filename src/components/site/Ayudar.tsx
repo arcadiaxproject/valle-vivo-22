@@ -13,7 +13,7 @@ const acciones = [
 
 export function Ayudar() {
   return (
-    <section className="flex min-h-screen flex-col justify-center bg-secondary/45 py-24 sm:py-32">
+    <section className="flex min-h-screen flex-col justify-center bg-moss py-24 sm:py-32">
       <div className="container-page">
         <Reveal>
           <p className="eyebrow text-terracotta">Cómo puedes ayudar</p>

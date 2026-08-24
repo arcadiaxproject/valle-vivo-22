@@ -100,21 +100,21 @@ export function Historias() {
   return (
     <section
       id="historias"
-      className="flex min-h-screen flex-col justify-center bg-forest-deep py-24 text-primary-foreground sm:py-32"
+      className="flex min-h-screen flex-col justify-center bg-stone py-24 sm:py-32"
     >
       <div className="container-page">
         <Reveal>
-          <p className="eyebrow text-primary-foreground/60">Historias del Valle</p>
+          <p className="eyebrow text-terracotta">Historias del Valle</p>
           <h2 className="mt-5 max-w-2xl text-4xl font-extrabold leading-[1.03] sm:text-5xl">
             Las historias detrás del Valle
           </h2>
-          <p className="mt-5 max-w-xl text-lg text-primary-foreground/70">
+          <p className="mt-5 max-w-xl text-lg text-muted-foreground">
             Conoce a las personas que están levantando de nuevo nuestra comarca.
           </p>
         </Reveal>
 
         {isError && (
-          <p className="mt-12 text-sm text-primary-foreground/60">
+          <p className="mt-12 text-sm text-muted-foreground">
             No se han podido cargar las historias. Inténtalo de nuevo más tarde.
           </p>
         )}
@@ -122,7 +122,7 @@ export function Historias() {
         {isPending && (
           <div className="mt-12 grid gap-5 sm:grid-cols-3">
             {[0, 1, 2].map((i) => (
-              <div key={i} className="aspect-[3/4] animate-pulse rounded-2xl bg-primary-foreground/10" />
+              <div key={i} className="aspect-[3/4] animate-pulse rounded-2xl bg-foreground/10" />
             ))}
           </div>
         )}

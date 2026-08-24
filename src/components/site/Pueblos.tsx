@@ -12,7 +12,7 @@ export function Pueblos() {
   return (
     <section
       id="pueblos"
-      className="flex min-h-screen flex-col justify-center bg-secondary/45 py-24 sm:py-32"
+      className="flex min-h-screen flex-col justify-center bg-background py-24 sm:py-32"
     >
       <div className="container-page">
         <Reveal>
@@ -35,7 +35,7 @@ export function Pueblos() {
         <div className="mt-12 grid gap-5 sm:grid-cols-2">
           {pueblos.map((p, i) => (
             <Reveal key={p.nombre} delay={i * 80}>
-              <a href="#mapa" className="group block overflow-hidden rounded-2xl bg-card shadow-soft transition-shadow duration-300 hover:shadow-lift">
+              <a href="#mapa" className="group block overflow-hidden rounded-2xl border border-border bg-card shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:border-terracotta/40 hover:shadow-lift">
                 <span className="block aspect-[4/5] overflow-hidden">
                   <img
                     src={p.img}
