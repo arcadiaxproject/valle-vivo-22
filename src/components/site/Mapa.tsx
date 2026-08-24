@@ -77,7 +77,7 @@ const marcadores: Marcador[] = [
 export function Mapa() {
   const [cat, setCat] = useState<string>("Todo");
   const [mun, setMun] = useState<string>("Todos");
-  const [activo, setActivo] = useState<Marcador | null>(marcadores[0]);
+  const [activo, setActivo] = useState<Marcador | null>(marcadores[0] ?? null);
 
   const visibles = marcadores.filter(
     (m) => (cat === "Todo" || m.categoria === cat) && (mun === "Todos" || m.municipio === mun),
