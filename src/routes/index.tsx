@@ -1,24 +1,51 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
+import { Navbar } from "@/components/site/Navbar";
+import { Hero } from "@/components/site/Hero";
+import { Proyecto } from "@/components/site/Proyecto";
+import { Explora } from "@/components/site/Explora";
+import { Negocios } from "@/components/site/Negocios";
+import { Historias } from "@/components/site/Historias";
+import { Ayudar } from "@/components/site/Ayudar";
+import { Mapa } from "@/components/site/Mapa";
+import { Pueblos } from "@/components/site/Pueblos";
+import { CtaNegocios } from "@/components/site/CtaNegocios";
+import { Footer } from "@/components/site/Footer";
+
+const title = "Sotillo está vivo — Descubre el Valle del Tiétar";
+const description =
+  "Negocios, pueblos y experiencias del Valle del Tiétar. Ven, descubre y consume local: el Valle sigue vivo.";
+
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title },
+      { name: "description", content: description },
+      { property: "og:title", content: title },
+      { property: "og:description", content: description },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <>
+      <Navbar />
+      <main>
+        <Hero />
+        <Proyecto />
+        <Explora />
+        <Negocios />
+        <Historias />
+        <Ayudar />
+        <Mapa />
+        <Pueblos />
+        <CtaNegocios />
+      </main>
+      <Footer />
+    </>
   );
 }
