@@ -1,90 +1,46 @@
-import { useState } from "react";
-import mapa from "@/assets/mapa.jpg";
-import neg1 from "@/assets/neg-1.jpg";
-import neg2 from "@/assets/neg-2.jpg";
-import neg3 from "@/assets/neg-3.jpg";
+import { lazy, Suspense, useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { ClientOnly } from "@tanstack/react-router";
+import { fetchNegocios, CATEGORIAS_NEGOCIO } from "@/lib/negocios";
 import { Reveal } from "./Reveal";
 
-type Marcador = {
-  id: string;
-  nombre: string;
-  categoria: string;
-  municipio: string;
-  x: number;
-  y: number;
-  img: string;
-};
+const MapaLeaflet = lazy(() => import("./MapaLeaflet"));
 
-const categorias = [
-  "Restaurantes",
-  "Alojamientos",
-  "Comercios",
-  "Actividades",
-  "Naturaleza",
-  "Lugares de interés",
-] as const;
-
-const municipios = ["Sotillo de la Adrada", "La Adrada", "Piedralaves", "Casavieja"];
-
-const marcadores: Marcador[] = [
-  {
-    id: "1",
-    nombre: "Mesón La Adrada",
-    categoria: "Restaurantes",
-    municipio: "Sotillo de la Adrada",
-    x: 32,
-    y: 40,
-    img: neg1,
-  },
-  {
-    id: "2",
-    nombre: "Casa Rural El Pinar",
-    categoria: "Alojamientos",
-    municipio: "Piedralaves",
-    x: 61,
-    y: 30,
-    img: neg2,
-  },
-  {
-    id: "3",
-    nombre: "Horno de la Plaza",
-    categoria: "Comercios",
-    municipio: "La Adrada",
-    x: 47,
-    y: 63,
-    img: neg3,
-  },
-  {
-    id: "4",
-    nombre: "Garganta de Nuño Cojo",
-    categoria: "Naturaleza",
-    municipio: "Piedralaves",
-    x: 74,
-    y: 58,
-    img: neg2,
-  },
-  {
-    id: "5",
-    nombre: "Ruta de los Molinos",
-    categoria: "Actividades",
-    municipio: "Casavieja",
-    x: 20,
-    y: 68,
-    img: neg1,
-  },
-];
+function MapaFallback() {
+  return (
+    <div className="flex h-[26rem] w-full items-center justify-center rounded-2xl bg-secondary/60 sm:h-[34rem]">
+      <p className="text-sm text-muted-foreground">Cargando mapa…</p>
+    </div>
+  );
+}
 
 export function Mapa() {
+  const { data, isPending, isError } = useQuery({
+    queryKey: ["negocios"],
+    queryFn: fetchNegocios,
+  });
+
   const [cat, setCat] = useState<string>("Todo");
   const [mun, setMun] = useState<string>("Todos");
-  const [activo, setActivo] = useState<Marcador | null>(marcadores[0] ?? null);
 
-  const visibles = marcadores.filter(
-    (m) => (cat === "Todo" || m.categoria === cat) && (mun === "Todos" || m.municipio === mun),
+  const municipios = useMemo(
+    () => Array.from(new Set((data ?? []).map((n) => n.municipio))).sort(),
+    [data],
+  );
+
+  const visibles = useMemo(
+    () =>
+      (data ?? []).filter(
+        (n) => (cat === "Todo" || n.categoria === cat) && (mun === "Todos" || n.municipio === mun),
+      ),
+    [data, cat, mun],
   );
 
   return (
-    <section id="mapa" className="bg-background py-24 sm:py-32">
+    <section
+      id="mapa"
+      className="flex min-h-screen flex-col justify-center bg-background py-24 sm:py-32"
+    >
       <div className="container-page">
         <Reveal>
           <p className="eyebrow text-terracotta">Mapa</p>
@@ -95,7 +51,7 @@ export function Mapa() {
 
         <Reveal delay={80}>
           <div className="mt-8 flex flex-wrap items-center gap-2">
-            {["Todo", ...categorias].map((c) => (
+            {["Todo", ...CATEGORIAS_NEGOCIO].map((c) => (
               <button
                 key={c}
                 onClick={() => setCat(c)}
@@ -124,48 +80,21 @@ export function Mapa() {
         </Reveal>
 
         <Reveal delay={140}>
-          <div className="relative mt-6 overflow-hidden rounded-2xl border border-border shadow-soft">
-            <img
-              src={mapa}
-              alt="Mapa del Valle del Tiétar"
-              width={1600}
-              height={1200}
-              loading="lazy"
-              className="h-[26rem] w-full object-cover saturate-[0.45] sm:h-[34rem]"
-            />
-            <span className="absolute inset-0 bg-background/25" />
-
-            {visibles.map((m) => (
-              <button
-                key={m.id}
-                onClick={() => setActivo(m)}
-                aria-label={m.nombre}
-                style={{ left: `${m.x}%`, top: `${m.y}%` }}
-                className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-background transition-transform duration-200 hover:scale-110 ${
-                  activo?.id === m.id ? "size-6 bg-accent" : "size-4 bg-forest-deep"
-                }`}
-              />
-            ))}
-
-            {activo && visibles.some((m) => m.id === activo.id) && (
-              <div className="absolute bottom-4 left-4 right-4 flex items-center gap-4 rounded-xl bg-card p-3 shadow-lift sm:right-auto sm:w-80">
-                <img
-                  src={activo.img}
-                  alt={activo.nombre}
-                  width={1200}
-                  height={900}
-                  loading="lazy"
-                  className="size-16 shrink-0 rounded-lg object-cover"
-                />
-                <div className="min-w-0">
-                  <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-                    {activo.categoria}
-                  </p>
-                  <p className="truncate text-base font-bold">{activo.nombre}</p>
-                  <p className="text-sm text-muted-foreground">{activo.municipio}</p>
-                </div>
+          <div className="mt-6 overflow-hidden rounded-2xl border border-border shadow-soft">
+            {isError && (
+              <div className="flex h-[26rem] w-full items-center justify-center bg-secondary/40 sm:h-[34rem]">
+                <p className="text-sm text-muted-foreground">No se ha podido cargar el mapa.</p>
               </div>
             )}
+            {!isError && (isPending ? (
+              <MapaFallback />
+            ) : (
+              <ClientOnly fallback={<MapaFallback />}>
+                <Suspense fallback={<MapaFallback />}>
+                  <MapaLeaflet negocios={visibles} />
+                </Suspense>
+              </ClientOnly>
+            ))}
           </div>
         </Reveal>
       </div>

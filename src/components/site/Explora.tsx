@@ -1,4 +1,5 @@
 import { ArrowUpRight } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import comer from "@/assets/cat-comer.jpg";
 import dormir from "@/assets/cat-dormir.jpg";
 import hacer from "@/assets/cat-hacer.jpg";
@@ -25,7 +26,10 @@ const categorias = [
 
 export function Explora() {
   return (
-    <section id="descubre" className="bg-secondary/45 py-24 sm:py-32">
+    <section
+      id="descubre"
+      className="flex min-h-screen flex-col justify-center bg-secondary/45 py-24 sm:py-32"
+    >
       <div className="container-page">
         <Reveal>
           <p className="eyebrow text-terracotta">Explora el Valle</p>
@@ -39,9 +43,10 @@ export function Explora() {
             <CarouselContent>
               {categorias.map((c) => (
                 <CarouselItem key={c.name} className="sm:basis-1/2">
-                  <a
-                    href="#negocios"
-                    className="group relative block h-[26rem] overflow-hidden rounded-2xl sm:h-[32rem] lg:h-[38rem]"
+                  <Link
+                    to="/categoria/$categoria"
+                    params={{ categoria: c.name }}
+                    className="group relative block h-[26rem] w-full overflow-hidden rounded-2xl text-left sm:h-[32rem] lg:h-[38rem]"
                   >
                     <img
                       src={c.img}
@@ -63,7 +68,7 @@ export function Explora() {
                       </span>
                       <ArrowUpRight className="size-8 shrink-0 translate-y-2 text-primary-foreground opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100" />
                     </span>
-                  </a>
+                  </Link>
                 </CarouselItem>
               ))}
             </CarouselContent>

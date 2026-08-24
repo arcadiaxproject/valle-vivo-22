@@ -1,0 +1,81 @@
+export type Database = {
+  public: {
+    Tables: {
+      negocios: {
+        Row: {
+          id: string;
+          nombre: string;
+          categoria: "Comer" | "Dormir" | "Qué hacer" | "Comercio local" | "Naturaleza" | "Pueblos";
+          municipio: string;
+          descripcion: string;
+          imagen: string | null;
+          abierto: boolean | null;
+          badges: string[];
+          direccion: string | null;
+          lat: number | null;
+          lng: number | null;
+          owner_id: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          nombre: string;
+          categoria: "Comer" | "Dormir" | "Qué hacer" | "Comercio local" | "Naturaleza" | "Pueblos";
+          municipio: string;
+          descripcion?: string;
+          imagen?: string | null;
+          abierto?: boolean | null;
+          badges?: string[];
+          direccion?: string | null;
+          lat?: number | null;
+          lng?: number | null;
+          owner_id?: string | null;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["negocios"]["Insert"]>;
+      };
+      historias: {
+        Row: {
+          id: string;
+          persona: string;
+          negocio: string;
+          municipio: string;
+          titulo: string;
+          imagen: string | null;
+          audio_url: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          persona: string;
+          negocio: string;
+          municipio: string;
+          titulo: string;
+          imagen?: string | null;
+          audio_url?: string | null;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["historias"]["Insert"]>;
+      };
+      profiles: {
+        Row: {
+          id: string;
+          nombre: string;
+          avatar_url: string | null;
+          role: "cliente" | "comercio" | null;
+          distintivo: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id: string;
+          nombre: string;
+          avatar_url?: string | null;
+          role?: "cliente" | "comercio" | null;
+          distintivo?: boolean;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["profiles"]["Insert"]>;
+      };
+    };
+  };
+};

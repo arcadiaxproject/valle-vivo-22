@@ -3,7 +3,10 @@ import { Reveal } from "./Reveal";
 
 export function Proyecto() {
   return (
-    <section id="proyecto" className="bg-background py-24 sm:py-32">
+    <section
+      id="proyecto"
+      className="flex min-h-screen flex-col justify-center bg-background py-24 sm:py-32"
+    >
       <div className="container-page grid items-center gap-14 lg:grid-cols-[1.05fr_1fr] lg:gap-20">
         <Reveal>
           <div className="overflow-hidden rounded-2xl">

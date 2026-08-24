@@ -2,7 +2,7 @@ import { Reveal } from "./Reveal";
 
 export function CtaNegocios() {
   return (
-    <section className="bg-background py-24 sm:py-32">
+    <section className="flex min-h-screen flex-col justify-center bg-background py-24 sm:py-32">
       <div className="container-page">
         <Reveal>
           <div className="rounded-3xl bg-forest-deep px-8 py-16 text-primary-foreground sm:px-16 sm:py-24">

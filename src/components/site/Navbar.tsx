@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
+import { useAuth } from "@/lib/auth";
+import { AccountDialog } from "./AccountDialog";
 
 const links = [
   { label: "Descubre", href: "#descubre" },
@@ -10,6 +12,85 @@ const links = [
   { label: "Historias", href: "#historias" },
   { label: "Mapa", href: "#mapa" },
 ];
+
+function GoogleIcon() {
+  return (
+    <svg className="size-4" viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        fill="#4285F4"
+        d="M23.52 12.27c0-.85-.08-1.67-.22-2.45H12v4.64h6.47a5.53 5.53 0 0 1-2.4 3.63v3h3.87c2.27-2.09 3.58-5.17 3.58-8.82z"
+      />
+      <path
+        fill="#34A853"
+        d="M12 24c3.24 0 5.96-1.07 7.94-2.91l-3.87-3c-1.08.72-2.45 1.15-4.07 1.15-3.13 0-5.78-2.11-6.73-4.96H1.28v3.1A12 12 0 0 0 12 24z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M5.27 14.28A7.2 7.2 0 0 1 4.89 12c0-.79.14-1.56.38-2.28v-3.1H1.28A12 12 0 0 0 0 12c0 1.94.46 3.77 1.28 5.38z"
+      />
+      <path
+        fill="#EA4335"
+        d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0A12 12 0 0 0 1.28 6.62l3.99 3.1C6.22 6.86 8.87 4.75 12 4.75z"
+      />
+    </svg>
+  );
+}
+
+function AuthControls({ solid }: { solid: boolean }) {
+  const { user, profile, loading, signInWithGoogle } = useAuth();
+
+  if (loading) return null;
+
+  if (!user) {
+    return (
+      <div className="flex items-center gap-3">
+        <button
+          onClick={() => void signInWithGoogle("login")}
+          className={`text-sm font-semibold transition-opacity hover:opacity-70 ${
+            solid ? "text-foreground" : "text-primary-foreground"
+          }`}
+        >
+          Iniciar sesión
+        </button>
+        <button
+          onClick={() => void signInWithGoogle("register")}
+          className={`inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-semibold transition-colors ${
+            solid
+              ? "border-border text-foreground hover:bg-secondary"
+              : "border-primary-foreground/45 text-primary-foreground hover:bg-primary-foreground/12"
+          }`}
+        >
+          <GoogleIcon />
+          Registrarme
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <AccountDialog>
+      <button
+        className={`flex items-center gap-3 rounded-lg transition-opacity hover:opacity-70`}
+        aria-label="Ver mi cuenta"
+      >
+        {profile?.avatar_url && (
+          <img
+            src={profile.avatar_url}
+            alt={profile.nombre}
+            width={32}
+            height={32}
+            className="size-8 rounded-full object-cover"
+          />
+        )}
+        <span
+          className={`text-sm font-semibold ${solid ? "text-foreground" : "text-primary-foreground"}`}
+        >
+          {profile?.nombre ?? user.email}
+        </span>
+      </button>
+    </AccountDialog>
+  );
+}
 
 export function Navbar() {
   const [solid, setSolid] = useState(false);
@@ -55,26 +136,8 @@ export function Navbar() {
           ))}
         </ul>
 
-        <div className="hidden items-center gap-3 lg:flex">
-          <button
-            className={`text-sm font-semibold transition-opacity hover:opacity-70 ${
-              solid ? "text-foreground" : "text-primary-foreground"
-            }`}
-          >
-            Iniciar sesión
-          </button>
-          <button
-            className={`rounded-lg border px-4 py-2 text-sm font-semibold transition-colors ${
-              solid
-                ? "border-border text-foreground hover:bg-secondary"
-                : "border-primary-foreground/45 text-primary-foreground hover:bg-primary-foreground/12"
-            }`}
-          >
-            Soy un negocio
-          </button>
-          <button className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90">
-            Soy un visitante
-          </button>
+        <div className="hidden items-center lg:flex">
+          <AuthControls solid={solid} />
         </div>
 
         <button
@@ -101,16 +164,8 @@ export function Navbar() {
               </li>
             ))}
           </ul>
-          <div className="mt-4 grid gap-2">
-            <button className="rounded-lg border border-border px-4 py-3 text-sm font-semibold">
-              Soy un negocio
-            </button>
-            <button className="rounded-lg bg-accent px-4 py-3 text-sm font-semibold text-accent-foreground">
-              Soy un visitante
-            </button>
-            <button className="py-2 text-sm font-semibold text-muted-foreground">
-              Iniciar sesión
-            </button>
+          <div className="mt-4">
+            <AuthControls solid />
           </div>
         </div>
       )}

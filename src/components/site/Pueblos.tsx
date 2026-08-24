@@ -1,18 +1,19 @@
 import { ArrowUpRight } from "lucide-react";
 import p1 from "@/assets/pueblo-1.jpg";
-import p2 from "@/assets/pueblo-2.jpg";
 import p3 from "@/assets/pueblo-3.jpg";
 import { Reveal } from "./Reveal";
 
 const pueblos = [
   { nombre: "Sotillo de la Adrada", img: p1, negocios: 48 },
-  { nombre: "Piedralaves", img: p2, negocios: 31 },
   { nombre: "La Adrada", img: p3, negocios: 27 },
 ];
 
 export function Pueblos() {
   return (
-    <section id="pueblos" className="bg-secondary/45 py-24 sm:py-32">
+    <section
+      id="pueblos"
+      className="flex min-h-screen flex-col justify-center bg-secondary/45 py-24 sm:py-32"
+    >
       <div className="container-page">
         <Reveal>
           <div className="flex flex-wrap items-end justify-between gap-6">
@@ -31,7 +32,7 @@ export function Pueblos() {
           </div>
         </Reveal>
 
-        <div className="mt-12 grid gap-5 sm:grid-cols-3">
+        <div className="mt-12 grid gap-5 sm:grid-cols-2">
           {pueblos.map((p, i) => (
             <Reveal key={p.nombre} delay={i * 80}>
               <a href="#mapa" className="group block overflow-hidden rounded-2xl bg-card shadow-soft transition-shadow duration-300 hover:shadow-lift">

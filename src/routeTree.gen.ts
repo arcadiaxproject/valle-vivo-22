@@ -10,33 +10,53 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CategoriaCategoriaRouteImport } from './routes/categoria.$categoria'
+import { Route as NegocioIdRouteImport } from './routes/negocio.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CategoriaCategoriaRoute = CategoriaCategoriaRouteImport.update({
+  id: '/categoria/$categoria',
+  path: '/categoria/$categoria',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NegocioIdRoute = NegocioIdRouteImport.update({
+  id: '/negocio/$id',
+  path: '/negocio/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/categoria/$categoria': typeof CategoriaCategoriaRoute
+  '/negocio/$id': typeof NegocioIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/categoria/$categoria': typeof CategoriaCategoriaRoute
+  '/negocio/$id': typeof NegocioIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/categoria/$categoria': typeof CategoriaCategoriaRoute
+  '/negocio/$id': typeof NegocioIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/categoria/$categoria' | '/negocio/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/categoria/$categoria' | '/negocio/$id'
+  id: '__root__' | '/' | '/categoria/$categoria' | '/negocio/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CategoriaCategoriaRoute: typeof CategoriaCategoriaRoute
+  NegocioIdRoute: typeof NegocioIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +68,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/categoria/$categoria': {
+      id: '/categoria/$categoria'
+      path: '/categoria/$categoria'
+      fullPath: '/categoria/$categoria'
+      preLoaderRoute: typeof CategoriaCategoriaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/negocio/$id': {
+      id: '/negocio/$id'
+      path: '/negocio/$id'
+      fullPath: '/negocio/$id'
+      preLoaderRoute: typeof NegocioIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CategoriaCategoriaRoute: CategoriaCategoriaRoute,
+  NegocioIdRoute: NegocioIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
