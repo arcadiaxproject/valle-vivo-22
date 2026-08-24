@@ -4,10 +4,8 @@ import { Navbar } from "@/components/site/Navbar";
 import { Hero } from "@/components/site/Hero";
 import { Proyecto } from "@/components/site/Proyecto";
 import { Explora } from "@/components/site/Explora";
-import { Negocios } from "@/components/site/Negocios";
 import { Historias } from "@/components/site/Historias";
 import { Ayudar } from "@/components/site/Ayudar";
-import { Mapa } from "@/components/site/Mapa";
 import { Pueblos } from "@/components/site/Pueblos";
 import { CtaNegocios } from "@/components/site/CtaNegocios";
 import { Footer } from "@/components/site/Footer";
@@ -38,12 +36,10 @@ function Index() {
         <Hero />
         <Proyecto />
         <Explora />
-        <Negocios />
         <Historias />
-        <Ayudar />
-        <Mapa />
         <Pueblos />
         <CtaNegocios />
+        <Ayudar />
       </main>
       <Footer />
     </>

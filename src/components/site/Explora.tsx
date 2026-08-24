@@ -6,6 +6,7 @@ import hacer from "@/assets/cat-hacer.jpg";
 import comercio from "@/assets/cat-comercio.jpg";
 import naturaleza from "@/assets/cat-naturaleza.jpg";
 import pueblos from "@/assets/cat-pueblos.jpg";
+import mapa from "@/assets/mapa.jpg";
 import { Reveal } from "./Reveal";
 
 const categorias = [
@@ -21,9 +22,17 @@ export function Explora() {
   return (
     <section
       id="descubre"
-      className="flex min-h-screen flex-col justify-center bg-stone py-24 sm:py-32"
+      className="relative flex flex-col justify-center overflow-hidden py-20 text-primary-foreground sm:py-24"
     >
-      <div className="container-page">
+      <img
+        src={mapa}
+        alt=""
+        aria-hidden="true"
+        className="absolute inset-0 size-full object-cover"
+      />
+      <div className="absolute inset-0 bg-[oklch(0.14_0.02_60/0.88)]" />
+
+      <div className="container-page relative">
         <Reveal>
           <div className="flex flex-wrap items-end justify-between gap-6">
             <div>
@@ -32,9 +41,6 @@ export function Explora() {
                 ¿Qué quieres descubrir?
               </h2>
             </div>
-            <p className="max-w-xs text-sm text-muted-foreground">
-              Elige por foto, no por lista. Cada categoría abre todo lo que hay del Valle.
-            </p>
           </div>
         </Reveal>
 
@@ -46,7 +52,7 @@ export function Explora() {
                 to="/categoria/$categoria"
                 params={{ categoria: c.name }}
                 className={`group relative block overflow-hidden rounded-xl ${
-                  c.big ? "col-span-2 aspect-[16/9] sm:col-span-1 sm:aspect-[3/4]" : "aspect-square sm:aspect-[3/4]"
+                  c.big ? "col-span-2 aspect-[16/9] sm:col-span-1 sm:aspect-[4/3]" : "aspect-square sm:aspect-[4/3]"
                 }`}
               >
                 <img

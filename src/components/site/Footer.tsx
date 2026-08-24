@@ -2,33 +2,28 @@ import { Instagram } from "lucide-react";
 
 const enlaces = [
   { label: "Proyecto", href: "#proyecto" },
-  { label: "Negocios", href: "#negocios" },
-  { label: "Pueblos", href: "#pueblos" },
+  { label: "Descubre", href: "#descubre" },
   { label: "Historias", href: "#historias" },
-  { label: "Contacto", href: "#top" },
-  { label: "Privacidad", href: "#top" },
-  { label: "Términos", href: "#top" },
+  { label: "Pueblos", href: "#pueblos" },
+  { label: "Ayudar", href: "#ayudar" },
 ];
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-background py-16">
-      <div className="container-page flex flex-col gap-10 sm:flex-row sm:items-start sm:justify-between">
-        <div className="max-w-sm">
-          <p className="text-lg font-extrabold text-primary">Sotillo está vivo</p>
-          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-            Un proyecto para mantener vivo el Valle del Tiétar.
-          </p>
+    <footer className="border-t border-border bg-background py-8">
+      <div className="container-page flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-3">
+          <p className="text-sm font-bold text-primary">Sotillo está vivo</p>
           <a
             href="https://instagram.com"
             aria-label="Instagram"
-            className="mt-6 inline-flex size-10 items-center justify-center rounded-lg border border-border text-foreground transition-colors duration-200 hover:bg-secondary"
+            className="inline-flex size-8 items-center justify-center rounded-lg border border-border text-foreground transition-colors duration-200 hover:bg-secondary"
           >
-            <Instagram className="size-4.5" />
+            <Instagram className="size-4" />
           </a>
         </div>
 
-        <nav className="grid grid-cols-2 gap-x-14 gap-y-3 sm:grid-cols-2">
+        <nav className="flex flex-wrap gap-x-6 gap-y-2">
           {enlaces.map((e) => (
             <a
               key={e.label}
@@ -39,10 +34,9 @@ export function Footer() {
             </a>
           ))}
         </nav>
-      </div>
-      <div className="container-page mt-12 border-t border-border pt-6">
+
         <p className="text-xs text-muted-foreground">
-          © {new Date().getFullYear()} Sotillo está vivo · Valle del Tiétar, Ávila
+          © {new Date().getFullYear()} Valle del Tiétar, Ávila
         </p>
       </div>
     </footer>

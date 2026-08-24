@@ -50,7 +50,7 @@ function HistoriaFeatured({
           tieneAudio ? "" : "cursor-default"
         }`}
       >
-        <span className="relative block aspect-[4/3] overflow-hidden sm:aspect-auto sm:min-h-[24rem]">
+        <span className="relative block h-40 overflow-hidden sm:h-56">
           <img
             src={h.imagen ?? undefined}
             alt={`${h.persona}, ${h.negocio}`}
@@ -69,8 +69,8 @@ function HistoriaFeatured({
             </span>
           )}
         </span>
-        <span className="flex flex-col justify-center gap-4 bg-forest-deep p-8 sm:p-10">
-          <span className="block font-serif text-2xl italic leading-snug text-primary-foreground sm:text-3xl">
+        <span className="flex h-40 flex-col justify-center gap-2 bg-forest-deep p-5 sm:h-56 sm:p-7">
+          <span className="block font-serif text-lg italic leading-snug text-primary-foreground sm:text-2xl">
             “{h.titulo}”
           </span>
           <span className="block text-sm text-primary-foreground/60">
@@ -158,32 +158,32 @@ export function Historias() {
   return (
     <section
       id="historias"
-      className="flex min-h-screen flex-col justify-center bg-bark py-24 sm:py-32"
+      className="flex h-screen flex-col justify-center overflow-hidden bg-bark py-10 sm:py-14"
     >
       <div className="container-page">
         <Reveal>
           <p className="eyebrow text-terracotta">Historias del Valle</p>
-          <h2 className="mt-5 max-w-xl text-4xl font-semibold leading-[1.03] text-primary-foreground sm:text-5xl">
+          <h2 className="mt-3 max-w-xl text-3xl font-semibold leading-[1.05] text-primary-foreground sm:text-4xl">
             Las personas detrás de cada negocio
           </h2>
-          <p className="mt-5 max-w-lg text-lg text-primary-foreground/60">
+          <p className="mt-3 max-w-lg text-base text-primary-foreground/60">
             Cómo vivieron el incendio, y cómo están volviendo a levantarlo, contado por ellos
             mismos.
           </p>
         </Reveal>
 
         {isError && (
-          <p className="mt-12 text-sm text-primary-foreground/60">
+          <p className="mt-8 text-sm text-primary-foreground/60">
             No se han podido cargar las historias. Inténtalo de nuevo más tarde.
           </p>
         )}
 
         {isPending && (
-          <div className="mt-12 aspect-[16/9] animate-pulse rounded-2xl bg-primary-foreground/10" />
+          <div className="mt-8 aspect-[16/9] animate-pulse rounded-2xl bg-primary-foreground/10" />
         )}
 
         {!isPending && !isError && featured && (
-          <div className="mt-12">
+          <div className="mt-6">
             <HistoriaFeatured
               h={featured}
               playing={playingId === featured.id}

@@ -5,12 +5,9 @@ import { useAuth } from "@/lib/auth";
 
 const links = [
   { label: "Descubre", href: "#descubre" },
-  { label: "Comer", href: "#negocios" },
-  { label: "Dormir", href: "#negocios" },
-  { label: "Qué hacer", href: "#descubre" },
-  { label: "Comercios", href: "#negocios" },
   { label: "Historias", href: "#historias" },
-  { label: "Mapa", href: "#mapa" },
+  { label: "Pueblos", href: "#pueblos" },
+  { label: "Ayudar", href: "#ayudar" },
 ];
 
 function GoogleIcon() {

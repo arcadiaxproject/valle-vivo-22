@@ -1,3 +1,4 @@
+import editorial from "@/assets/editorial-negocio.jpg";
 import { Reveal } from "./Reveal";
 
 const acciones = [
@@ -13,8 +14,19 @@ const acciones = [
 
 export function Ayudar() {
   return (
-    <section id="ayudar" className="flex min-h-screen flex-col justify-center bg-cream py-24 sm:py-32">
-      <div className="container-page">
+    <section
+      id="ayudar"
+      className="relative flex min-h-screen flex-col justify-center overflow-hidden py-24 text-primary-foreground sm:py-32"
+    >
+      <img
+        src={editorial}
+        alt=""
+        aria-hidden="true"
+        className="absolute inset-0 size-full object-cover"
+      />
+      <div className="absolute inset-0 bg-[linear-gradient(to_top,oklch(0.14_0.02_60/0.92),oklch(0.14_0.02_60/0.7))]" />
+
+      <div className="container-page relative">
         <Reveal>
           <p className="eyebrow text-terracotta">Cómo puedes ayudar</p>
           <h2 className="mt-5 max-w-2xl text-4xl font-semibold leading-[1.03] sm:text-5xl">
@@ -25,10 +37,10 @@ export function Ayudar() {
         <div className="mt-14 grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
           {acciones.map((a, i) => (
             <Reveal key={a.t} delay={i * 70}>
-              <div className="border-t border-foreground/15 pt-6">
+              <div className="border-t border-primary-foreground/20 pt-6">
                 <span className="text-sm font-bold text-terracotta">{a.n}</span>
-                <h3 className="mt-4 text-2xl font-bold">{a.t}</h3>
-                <p className="mt-2 text-base leading-relaxed text-muted-foreground">{a.d}</p>
+                <h3 className="mt-4 text-2xl font-semibold">{a.t}</h3>
+                <p className="mt-2 text-base leading-relaxed text-primary-foreground/70">{a.d}</p>
               </div>
             </Reveal>
           ))}

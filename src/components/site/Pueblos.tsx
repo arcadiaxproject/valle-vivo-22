@@ -1,5 +1,6 @@
 import { ArrowUpRight } from "lucide-react";
 import p1 from "@/assets/pueblo-1.jpg";
+import p2 from "@/assets/pueblo-2.jpg";
 import p3 from "@/assets/pueblo-3.jpg";
 import { Reveal } from "./Reveal";
 
@@ -12,31 +13,37 @@ export function Pueblos() {
   return (
     <section
       id="pueblos"
-      className="flex min-h-screen flex-col justify-center bg-background py-24 sm:py-32"
+      className="relative flex h-screen flex-col justify-center overflow-hidden py-10 text-primary-foreground sm:py-14"
     >
-      <div className="container-page">
+      <img
+        src={p2}
+        alt=""
+        aria-hidden="true"
+        className="absolute inset-0 size-full object-cover"
+      />
+      <div className="absolute inset-0 bg-[linear-gradient(to_top,oklch(0.14_0.02_60/0.9),oklch(0.14_0.02_60/0.55))]" />
+
+      <div className="container-page relative">
         <Reveal>
           <div className="flex flex-wrap items-end justify-between gap-6">
             <div>
               <p className="eyebrow text-terracotta">Pueblos</p>
-              <h2 className="mt-5 max-w-2xl text-4xl font-semibold leading-[1.03] sm:text-5xl">
+              <h2 className="mt-3 max-w-2xl text-3xl font-semibold leading-[1.05] sm:text-4xl">
                 Un valle, muchos pueblos
               </h2>
             </div>
-            <a
-              href="#mapa"
-              className="text-sm font-semibold text-forest underline underline-offset-4 transition-opacity hover:opacity-70"
-            >
-              Ver todos los municipios
-            </a>
+            
           </div>
         </Reveal>
 
-        <div className="mt-12 grid gap-5 sm:grid-cols-2">
+        <div className="mt-6 grid gap-5 sm:grid-cols-2">
           {pueblos.map((p, i) => (
             <Reveal key={p.nombre} delay={i * 80}>
-              <a href="#mapa" className="group block overflow-hidden rounded-2xl border border-border bg-card shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:border-terracotta/40 hover:shadow-lift">
-                <span className="block aspect-[4/5] overflow-hidden">
+              <a
+                href="#descubre"
+                className="group block overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:border-terracotta/40 hover:shadow-lift"
+              >
+                <span className="block h-56 overflow-hidden sm:h-64">
                   <img
                     src={p.img}
                     alt={p.nombre}
@@ -46,9 +53,9 @@ export function Pueblos() {
                     className="size-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.04]"
                   />
                 </span>
-                <span className="flex items-center justify-between gap-4 p-6">
+                <span className="flex items-center justify-between gap-4 p-4">
                   <span>
-                    <span className="block text-xl font-bold">{p.nombre}</span>
+                    <span className="block text-lg font-bold">{p.nombre}</span>
                     <span className="mt-1 block text-sm text-muted-foreground">
                       {p.negocios} negocios · qué hacer, comer y dormir
                     </span>

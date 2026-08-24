@@ -1,3 +1,4 @@
+import fuego from "@/assets/fuego.mp4";
 import { Reveal } from "./Reveal";
 
 const stats: [string, string][] = [
@@ -10,9 +11,20 @@ export function Proyecto() {
   return (
     <section
       id="proyecto"
-      className="flex min-h-screen flex-col justify-center bg-bark py-24 text-primary-foreground sm:py-32"
+      className="relative flex min-h-screen flex-col justify-center overflow-hidden bg-bark py-24 text-primary-foreground sm:py-32"
     >
-      <div className="container-page max-w-3xl text-center">
+      <video
+        className="absolute inset-0 size-full object-cover"
+        src={fuego}
+        autoPlay
+        muted
+        loop
+        playsInline
+        aria-hidden="true"
+      />
+      <div className="absolute inset-0 bg-bark/80" />
+
+      <div className="container-page relative max-w-3xl text-center">
         <Reveal>
           <p className="eyebrow text-terracotta">Por qué esto importa</p>
           <h2 className="mt-6 font-serif text-4xl italic leading-[1.12] sm:text-6xl">
