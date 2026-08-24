@@ -38,7 +38,7 @@ function CategoriaPage() {
           </Link>
 
           <p className="eyebrow mt-8 text-terracotta">{categoria}</p>
-          <h1 className="mt-3 text-4xl font-extrabold leading-[1.03] sm:text-5xl">{categoria}</h1>
+          <h1 className="mt-3 text-4xl font-semibold leading-[1.03] sm:text-5xl">{categoria}</h1>
           <p className="mt-4 text-lg text-muted-foreground">
             {isPending
               ? "Cargando…"

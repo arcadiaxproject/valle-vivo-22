@@ -16,20 +16,20 @@ export function Negocios() {
   return (
     <section
       id="negocios"
-      className="flex min-h-screen flex-col justify-center bg-wood py-24 text-primary-foreground sm:py-32"
+      className="flex min-h-screen flex-col justify-center bg-cream py-24 sm:py-32"
     >
       <div className="container-page">
         <Reveal>
           <div className="flex flex-wrap items-end justify-between gap-6">
             <div>
-              <p className="eyebrow text-primary-foreground/60">Negocios destacados</p>
-              <h2 className="mt-5 max-w-2xl text-4xl font-extrabold leading-[1.03] sm:text-5xl">
-                Descubre quién mantiene vivo el Valle
+              <p className="eyebrow text-terracotta">Negocios</p>
+              <h2 className="mt-5 max-w-2xl text-4xl font-semibold leading-[1.03] sm:text-5xl">
+                Quién mantiene vivo el Valle
               </h2>
             </div>
             <a
               href="#mapa"
-              className="text-sm font-semibold text-primary-foreground underline underline-offset-4 transition-opacity hover:opacity-70"
+              className="text-sm font-semibold text-forest underline underline-offset-4 transition-opacity hover:opacity-70"
             >
               Ver todos en el mapa
             </a>
@@ -37,7 +37,7 @@ export function Negocios() {
         </Reveal>
 
         {isError && (
-          <p className="mt-12 text-sm text-primary-foreground/70">
+          <p className="mt-12 text-sm text-muted-foreground">
             No se han podido cargar los negocios. Inténtalo de nuevo más tarde.
           </p>
         )}
@@ -45,7 +45,7 @@ export function Negocios() {
         {isPending && (
           <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {[0, 1, 2].map((i) => (
-              <div key={i} className="h-96 animate-pulse rounded-2xl bg-primary-foreground/10" />
+              <div key={i} className="h-96 animate-pulse rounded-2xl bg-secondary/60" />
             ))}
           </div>
         )}

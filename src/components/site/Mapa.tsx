@@ -44,7 +44,7 @@ export function Mapa() {
       <div className="container-page">
         <Reveal>
           <p className="eyebrow text-terracotta">Mapa</p>
-          <h2 className="mt-5 text-4xl font-extrabold leading-[1.03] sm:text-5xl">
+          <h2 className="mt-5 text-4xl font-semibold leading-[1.03] sm:text-5xl">
             Descubre el Valle
           </h2>
         </Reveal>

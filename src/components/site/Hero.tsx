@@ -17,29 +17,27 @@ export function Hero() {
       <div className="absolute inset-0 bg-[linear-gradient(to_top,oklch(0.19_0.012_120/0.82),oklch(0.19_0.012_120/0.35)_55%,oklch(0.19_0.012_120/0.45))]" />
 
       <div className="container-page relative z-10 pb-24 pt-32 sm:pb-28">
-        <p className="eyebrow text-primary-foreground/80">Salvar el Valle del Tiétar</p>
-        <h1 className="mt-5 max-w-4xl text-5xl font-extrabold leading-[0.95] text-primary-foreground sm:text-7xl lg:text-8xl">
+        <p className="eyebrow text-primary-foreground/80">Valle del Tiétar · Ávila</p>
+        <h1 className="mt-5 max-w-5xl text-6xl font-semibold leading-[0.92] text-primary-foreground sm:text-8xl lg:text-[9rem]">
           Sotillo está vivo.
         </h1>
-        <p className="mt-6 max-w-xl text-xl font-semibold text-primary-foreground/95 sm:text-2xl">
-          Descubre. Visita. Consume local.
-        </p>
-        <p className="mt-4 max-w-lg text-base leading-relaxed text-primary-foreground/75">
-          Descubre los negocios, lugares y experiencias que mantienen vivo el Valle del Tiétar.
+        <p className="mt-7 max-w-xl text-lg leading-relaxed text-primary-foreground/85 sm:text-xl">
+          Pueblos, bosques y negocios de siempre. Visítalos, consume local, y ayuda a que el
+          Valle siga en pie.
         </p>
 
-        <div className="mt-9 flex flex-wrap gap-3">
+        <div className="mt-9 flex flex-wrap items-center gap-6">
           <a
             href="#descubre"
-            className="rounded-xl bg-accent px-6 py-3.5 text-sm font-semibold text-accent-foreground transition-colors duration-200 hover:bg-accent/90"
+            className="rounded-lg bg-accent px-7 py-3.5 text-sm font-bold text-accent-foreground transition-colors duration-200 hover:bg-accent/90"
           >
             Explorar el Valle
           </a>
           <a
-            href="#proyecto"
-            className="rounded-xl border border-primary-foreground/45 px-6 py-3.5 text-sm font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary-foreground/12"
+            href="#ayudar"
+            className="text-sm font-semibold text-primary-foreground/90 underline decoration-primary-foreground/40 underline-offset-4 transition-colors hover:decoration-primary-foreground"
           >
-            Conoce el proyecto
+            Cómo ayudar
           </a>
         </div>
       </div>

@@ -13,11 +13,11 @@ const acciones = [
 
 export function Ayudar() {
   return (
-    <section className="flex min-h-screen flex-col justify-center bg-moss py-24 sm:py-32">
+    <section id="ayudar" className="flex min-h-screen flex-col justify-center bg-cream py-24 sm:py-32">
       <div className="container-page">
         <Reveal>
           <p className="eyebrow text-terracotta">Cómo puedes ayudar</p>
-          <h2 className="mt-5 max-w-2xl text-4xl font-extrabold leading-[1.03] sm:text-5xl">
+          <h2 className="mt-5 max-w-2xl text-4xl font-semibold leading-[1.03] sm:text-5xl">
             Ayudar es más fácil de lo que parece.
           </h2>
         </Reveal>

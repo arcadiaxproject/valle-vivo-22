@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { useAuth } from "@/lib/auth";
-import { AccountDialog } from "./AccountDialog";
 
 const links = [
   { label: "Descubre", href: "#descubre" },
@@ -68,27 +68,26 @@ function AuthControls({ solid }: { solid: boolean }) {
   }
 
   return (
-    <AccountDialog>
-      <button
-        className={`flex items-center gap-3 rounded-lg transition-opacity hover:opacity-70`}
-        aria-label="Ver mi cuenta"
+    <Link
+      to="/cuenta"
+      className="flex items-center gap-3 rounded-lg transition-opacity hover:opacity-70"
+      aria-label="Ver mi cuenta"
+    >
+      {profile?.avatar_url && (
+        <img
+          src={profile.avatar_url}
+          alt={profile.nombre}
+          width={32}
+          height={32}
+          className="size-8 rounded-full object-cover"
+        />
+      )}
+      <span
+        className={`text-sm font-semibold ${solid ? "text-foreground" : "text-primary-foreground"}`}
       >
-        {profile?.avatar_url && (
-          <img
-            src={profile.avatar_url}
-            alt={profile.nombre}
-            width={32}
-            height={32}
-            className="size-8 rounded-full object-cover"
-          />
-        )}
-        <span
-          className={`text-sm font-semibold ${solid ? "text-foreground" : "text-primary-foreground"}`}
-        >
-          {profile?.nombre ?? user.email}
-        </span>
-      </button>
-    </AccountDialog>
+        {profile?.nombre ?? user.email}
+      </span>
+    </Link>
   );
 }
 

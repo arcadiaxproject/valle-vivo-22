@@ -6,7 +6,8 @@
 
 /*
  * Sotillo está vivo — design system
- * Verde bosque, verde natural, crema, tierra, terracota (acento).
+ * Pinar, Musgo, Ceniza, Ascua (acento), Piedra, Agosto (estacional).
+ * Referencia visual: Faroe Islands. Referencia de contenido: Visit Norway.
  */
 
 @theme inline {
@@ -51,6 +52,7 @@
   --color-wood: var(--wood);
   --color-moss: var(--moss);
   --color-stone: var(--stone);
+  --color-musgo: var(--musgo);
   --color-ink: var(--ink);
 
   --shadow-soft: 0 1px 2px oklch(0.2 0.03 150 / 0.04), 0 12px 32px -18px oklch(0.2 0.03 150 / 0.25);
@@ -58,40 +60,49 @@
 }
 
 :root {
-  --radius: 0.75rem; /* ~12px, más sobrio */
+  --radius: 0.625rem; /* ~10px, más editorial que redondeado */
 
-  --forest-deep: oklch(0.25 0.048 148);
-  --forest: oklch(0.34 0.055 148);
-  --leaf: oklch(0.55 0.085 142);
-  --bark: oklch(0.28 0.04 55);
-  --wood: oklch(0.5 0.065 52);
-  --moss: oklch(0.92 0.026 138);
-  --stone: oklch(0.905 0.01 75);
-  --cream: oklch(0.965 0.016 82);
-  --sand: oklch(0.905 0.03 72);
-  --earth: oklch(0.62 0.055 62);
-  --terracotta: oklch(0.565 0.13 40);
-  --ink: oklch(0.19 0.017 60);
+  /* Pinar — hero, cierre, texto sobre foto */
+  --forest-deep: #1c2b1e;
+  /* Pinar medio — secciones y acentos intermedios */
+  --forest: #2c4126;
+  /* Musgo — icono/acento sobre fondo claro */
+  --leaf: #4c6a3f;
+  --musgo: #4c6a3f;
+  /* Ceniza — Manifiesto, Historias, superficies documentales */
+  --bark: #211c17;
+  /* Agosto — dorado estacional, solo Eventos/detalle puntual */
+  --wood: #b9902e;
+  /* Piedra clara — tinte de apoyo */
+  --moss: #eef0e6;
+  /* Piedra — fondo Descubre / Negocios */
+  --stone: #ede6d6;
+  --cream: #f5f1e8;
+  --sand: #e7dfc9;
+  --earth: #8a6a3c;
+  /* Ascua — único acento de acción */
+  --terracotta: #c1502e;
+  --ink: #211d17;
 
   --background: var(--cream);
   --foreground: var(--ink);
-  --card: oklch(0.99 0.006 75);
+  --card: #fcfaf4;
   --card-foreground: var(--ink);
-  --popover: oklch(0.99 0.006 75);
+  --popover: #fcfaf4;
   --popover-foreground: var(--ink);
   --primary: var(--forest-deep);
-  --primary-foreground: oklch(0.98 0.008 88);
+  --primary-foreground: #f4efe2;
   --secondary: var(--sand);
   --secondary-foreground: var(--bark);
-  --muted: oklch(0.925 0.024 74);
-  --muted-foreground: oklch(0.44 0.03 60);
+  --muted: #e9e2d0;
+  --muted-foreground: #6c6455;
   --accent: var(--terracotta);
-  --accent-foreground: oklch(0.985 0.01 60);
+  --accent-foreground: #fbf3ea;
   --destructive: oklch(0.55 0.19 27);
   --destructive-foreground: oklch(0.985 0.01 60);
-  --border: oklch(0.87 0.026 70);
-  --input: oklch(0.87 0.026 70);
-  --ring: var(--leaf);
+  --border: #e2dac5;
+  --input: #e2dac5;
+  --ring: var(--musgo);
 }
 
 @layer base {

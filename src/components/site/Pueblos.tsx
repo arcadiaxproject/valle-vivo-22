@@ -19,7 +19,7 @@ export function Pueblos() {
           <div className="flex flex-wrap items-end justify-between gap-6">
             <div>
               <p className="eyebrow text-terracotta">Pueblos</p>
-              <h2 className="mt-5 max-w-2xl text-4xl font-extrabold leading-[1.03] sm:text-5xl">
+              <h2 className="mt-5 max-w-2xl text-4xl font-semibold leading-[1.03] sm:text-5xl">
                 Un valle, muchos pueblos
               </h2>
             </div>

@@ -67,7 +67,7 @@ function NegocioPage() {
               <p className="eyebrow mt-8 text-terracotta">
                 {negocio.categoria} · {negocio.municipio}
               </p>
-              <h1 className="mt-3 text-4xl font-extrabold leading-[1.03] sm:text-5xl">
+              <h1 className="mt-3 text-4xl font-semibold leading-[1.03] sm:text-5xl">
                 {negocio.nombre}
               </h1>
 

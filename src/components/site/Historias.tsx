@@ -5,7 +5,85 @@ import { fetchHistorias, type Historia } from "@/lib/historias";
 import { shuffle } from "@/lib/utils";
 import { Reveal } from "./Reveal";
 
-function HistoriaCard({
+function PlayButton({
+  size,
+  playing,
+  tieneAudio,
+}: {
+  size: "lg" | "sm";
+  playing: boolean;
+  tieneAudio: boolean;
+}) {
+  const dim = size === "lg" ? "size-14" : "size-10";
+  const icon = size === "lg" ? "size-6" : "size-4";
+  return (
+    <span
+      className={`flex ${dim} items-center justify-center rounded-full backdrop-blur-sm transition-colors duration-200 ${
+        tieneAudio ? "bg-primary-foreground/15 group-hover:bg-accent" : "bg-primary-foreground/10 opacity-60"
+      }`}
+    >
+      {playing ? (
+        <Pause className={`${icon} fill-current`} />
+      ) : (
+        <Play className={`${icon} translate-x-[1px] fill-current`} />
+      )}
+    </span>
+  );
+}
+
+function HistoriaFeatured({
+  h,
+  playing,
+  onToggle,
+}: {
+  h: Historia;
+  playing: boolean;
+  onToggle: () => void;
+}) {
+  const tieneAudio = Boolean(h.audio_url);
+  return (
+    <Reveal delay={80}>
+      <button
+        onClick={tieneAudio ? onToggle : undefined}
+        aria-disabled={!tieneAudio}
+        className={`group grid w-full overflow-hidden rounded-2xl text-left sm:grid-cols-[1.3fr_1fr] ${
+          tieneAudio ? "" : "cursor-default"
+        }`}
+      >
+        <span className="relative block aspect-[4/3] overflow-hidden sm:aspect-auto sm:min-h-[24rem]">
+          <img
+            src={h.imagen ?? undefined}
+            alt={`${h.persona}, ${h.negocio}`}
+            width={960}
+            height={720}
+            loading="lazy"
+            className="size-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+          />
+          <span className="absolute inset-0 bg-black/15" />
+          <span className="absolute inset-0 flex items-center justify-center">
+            <PlayButton size="lg" playing={playing} tieneAudio={tieneAudio} />
+          </span>
+          {!tieneAudio && (
+            <span className="absolute left-5 top-5 rounded-md bg-primary-foreground/10 px-2 py-1 text-xs font-semibold text-primary-foreground backdrop-blur-sm">
+              Audio próximamente
+            </span>
+          )}
+        </span>
+        <span className="flex flex-col justify-center gap-4 bg-forest-deep p-8 sm:p-10">
+          <span className="block font-serif text-2xl italic leading-snug text-primary-foreground sm:text-3xl">
+            “{h.titulo}”
+          </span>
+          <span className="block text-sm text-primary-foreground/60">
+            <span className="font-semibold text-primary-foreground/85">{h.persona}</span> —{" "}
+            {h.negocio}, {h.municipio}
+          </span>
+        </span>
+      </button>
+    </Reveal>
+  );
+}
+
+function HistoriaSecundaria({
   h,
   delay,
   playing,
@@ -17,55 +95,34 @@ function HistoriaCard({
   onToggle: () => void;
 }) {
   const tieneAudio = Boolean(h.audio_url);
-
   return (
     <Reveal delay={delay}>
       <button
         onClick={tieneAudio ? onToggle : undefined}
-        aria-label={
-          tieneAudio ? (playing ? `Pausar historia de ${h.persona}` : `Escuchar historia de ${h.persona}`) : undefined
-        }
         aria-disabled={!tieneAudio}
-        className={`group block w-full overflow-hidden rounded-2xl text-left ${
+        className={`group flex w-full items-center gap-4 rounded-xl p-3 text-left transition-colors hover:bg-primary-foreground/5 ${
           tieneAudio ? "" : "cursor-default"
         }`}
       >
-        <span className="relative block aspect-[3/4] overflow-hidden rounded-2xl">
+        <span className="relative block size-20 shrink-0 overflow-hidden rounded-lg">
           <img
             src={h.imagen ?? undefined}
             alt={`${h.persona}, ${h.negocio}`}
-            width={720}
-            height={1080}
+            width={160}
+            height={160}
             loading="lazy"
-            className="size-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.04]"
+            className="size-full object-cover"
           />
-          <span className="absolute inset-0 bg-[linear-gradient(to_top,oklch(0.19_0.012_120/0.85),transparent_60%)]" />
-          <span
-            className={`absolute left-5 top-5 flex size-12 items-center justify-center rounded-full backdrop-blur-sm transition-colors duration-200 ${
-              tieneAudio
-                ? "bg-background/18 group-hover:bg-accent"
-                : "bg-background/10 opacity-60"
-            }`}
-          >
-            {playing ? (
-              <Pause className="size-5 fill-current" />
-            ) : (
-              <Play className="size-5 translate-x-[1px] fill-current" />
-            )}
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block truncate text-sm font-semibold italic text-primary-foreground/90">
+            “{h.titulo}”
           </span>
-          {!tieneAudio && (
-            <span className="absolute left-5 top-20 rounded-md bg-background/70 px-2 py-1 text-xs font-semibold text-foreground backdrop-blur-sm">
-              Audio próximamente
-            </span>
-          )}
-          <span className="absolute inset-x-0 bottom-0 block p-6">
-            <span className="block text-lg font-semibold leading-snug">“{h.titulo}”</span>
-            <span className="mt-3 block text-sm text-primary-foreground/70">
-              {h.persona} · {h.negocio}
-            </span>
-            <span className="block text-sm text-primary-foreground/50">{h.municipio}</span>
+          <span className="mt-1 block text-xs text-primary-foreground/50">
+            {h.persona} · {h.negocio}
           </span>
         </span>
+        <PlayButton size="sm" playing={playing} tieneAudio={tieneAudio} />
       </button>
     </Reveal>
   );
@@ -78,6 +135,7 @@ export function Historias() {
   });
 
   const destacadas = useMemo(() => shuffle(data ?? []).slice(0, 3), [data]);
+  const [featured, ...secundarias] = destacadas;
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [playingId, setPlayingId] = useState<string | null>(null);
@@ -100,44 +158,50 @@ export function Historias() {
   return (
     <section
       id="historias"
-      className="flex min-h-screen flex-col justify-center bg-stone py-24 sm:py-32"
+      className="flex min-h-screen flex-col justify-center bg-bark py-24 sm:py-32"
     >
       <div className="container-page">
         <Reveal>
           <p className="eyebrow text-terracotta">Historias del Valle</p>
-          <h2 className="mt-5 max-w-2xl text-4xl font-extrabold leading-[1.03] sm:text-5xl">
-            Las historias detrás del Valle
+          <h2 className="mt-5 max-w-xl text-4xl font-semibold leading-[1.03] text-primary-foreground sm:text-5xl">
+            Las personas detrás de cada negocio
           </h2>
-          <p className="mt-5 max-w-xl text-lg text-muted-foreground">
-            Conoce a las personas que están levantando de nuevo nuestra comarca.
+          <p className="mt-5 max-w-lg text-lg text-primary-foreground/60">
+            Cómo vivieron el incendio, y cómo están volviendo a levantarlo, contado por ellos
+            mismos.
           </p>
         </Reveal>
 
         {isError && (
-          <p className="mt-12 text-sm text-muted-foreground">
+          <p className="mt-12 text-sm text-primary-foreground/60">
             No se han podido cargar las historias. Inténtalo de nuevo más tarde.
           </p>
         )}
 
         {isPending && (
-          <div className="mt-12 grid gap-5 sm:grid-cols-3">
-            {[0, 1, 2].map((i) => (
-              <div key={i} className="aspect-[3/4] animate-pulse rounded-2xl bg-foreground/10" />
-            ))}
-          </div>
+          <div className="mt-12 aspect-[16/9] animate-pulse rounded-2xl bg-primary-foreground/10" />
         )}
 
-        {!isPending && !isError && (
-          <div className="mt-12 grid gap-5 sm:grid-cols-3">
-            {destacadas.map((h, i) => (
-              <HistoriaCard
-                key={h.id}
-                h={h}
-                delay={i * 90}
-                playing={playingId === h.id}
-                onToggle={() => toggle(h)}
-              />
-            ))}
+        {!isPending && !isError && featured && (
+          <div className="mt-12">
+            <HistoriaFeatured
+              h={featured}
+              playing={playingId === featured.id}
+              onToggle={() => toggle(featured)}
+            />
+            {secundarias.length > 0 && (
+              <div className="mt-3 grid gap-1 border-t border-primary-foreground/10 pt-3 sm:grid-cols-2">
+                {secundarias.map((h, i) => (
+                  <HistoriaSecundaria
+                    key={h.id}
+                    h={h}
+                    delay={i * 90}
+                    playing={playingId === h.id}
+                    onToggle={() => toggle(h)}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         )}
 
