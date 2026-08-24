@@ -1,12 +1,12 @@
 import heroPoster from "@/assets/hero-valle.jpg";
-import heroVideo from "@/assets/hero-valle.mp4";
+import heroVideo from "@/assets/hero-valle.mp4.asset.json";
 
 export function Hero() {
   return (
     <section id="top" className="relative flex min-h-screen items-end overflow-hidden">
       <video
         className="absolute inset-0 size-full object-cover"
-        src={heroVideo}
+        src={heroVideo.url}
         poster={heroPoster}
         autoPlay
         muted
