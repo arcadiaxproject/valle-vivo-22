@@ -2,7 +2,15 @@ import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { ArrowLeft, Award, CalendarDays, LogOut, Store, UserRound } from "lucide-react";
+import {
+  ArrowLeft,
+  Award,
+  CalendarDays,
+  Images,
+  LogOut,
+  Store,
+  UserRound,
+} from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { fetchMiNegocio } from "@/lib/negocios";
 import { Navbar } from "@/components/site/Navbar";
@@ -162,33 +170,97 @@ function CuentaPage() {
           {profile?.role === "comercio" && (
             <div className="mt-6 overflow-hidden rounded-2xl border border-border bg-card shadow-soft">
               {miNegocio ? (
-                <div className="flex flex-col sm:flex-row">
-                  {miNegocio.imagen && (
-                    <img
-                      src={miNegocio.imagen}
-                      alt={miNegocio.nombre}
-                      width={320}
-                      height={240}
-                      className="h-48 w-full object-cover sm:h-auto sm:w-56"
-                    />
-                  )}
-                  <div className="flex flex-1 flex-col justify-between p-6">
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-                        {miNegocio.categoria} · {miNegocio.municipio}
-                      </p>
-                      <h2 className="mt-2 text-xl font-bold">{miNegocio.nombre}</h2>
-                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                        {miNegocio.descripcion}
-                      </p>
+                <>
+                  <div className="relative">
+                    {miNegocio.imagen ? (
+                      <img
+                        src={miNegocio.imagen}
+                        alt={miNegocio.nombre}
+                        width={960}
+                        height={420}
+                        className="h-56 w-full object-cover sm:h-64"
+                      />
+                    ) : (
+                      <div className="flex h-56 w-full items-center justify-center bg-secondary sm:h-64">
+                        <Store className="size-8 text-muted-foreground" />
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-[linear-gradient(to_top,oklch(0.14_0.02_60/0.75),transparent_55%)]" />
+                    <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-6">
+                      <div className="min-w-0">
+                        <p className="text-xs font-semibold uppercase tracking-widest text-primary-foreground/70">
+                          {miNegocio.categoria} · {miNegocio.municipio}
+                        </p>
+                        <h2 className="mt-1 truncate text-2xl font-semibold text-primary-foreground">
+                          {miNegocio.nombre}
+                        </h2>
+                      </div>
+                      <MiNegocioDialog>
+                        <button className="shrink-0 rounded-lg bg-primary-foreground px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-primary-foreground/90">
+                          Editar
+                        </button>
+                      </MiNegocioDialog>
                     </div>
-                    <MiNegocioDialog>
-                      <button className="mt-4 w-fit rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90">
-                        Editar mi negocio
-                      </button>
-                    </MiNegocioDialog>
                   </div>
-                </div>
+
+                  <div className="p-6">
+                    <p className="text-sm leading-relaxed text-muted-foreground">
+                      {miNegocio.descripcion}
+                    </p>
+
+                    {miNegocio.fotos.length > 0 && (
+                      <div className="mt-6">
+                        <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                          <Images className="size-3.5" />
+                          Galería · {miNegocio.fotos.length}{" "}
+                          {miNegocio.fotos.length === 1 ? "foto" : "fotos"}
+                        </p>
+                        <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4">
+                          {miNegocio.fotos.map((url) => (
+                            <img
+                              key={url}
+                              src={url}
+                              alt=""
+                              width={200}
+                              height={200}
+                              loading="lazy"
+                              className="aspect-square w-full rounded-lg object-cover"
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {miNegocio.video_url && (
+                      <div className="mt-6">
+                        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                          Vídeo
+                        </p>
+                        <video
+                          src={miNegocio.video_url}
+                          controls
+                          className="mt-3 w-full rounded-lg"
+                        />
+                      </div>
+                    )}
+
+                    {miNegocio.audio_url && (
+                      <div className="mt-6">
+                        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                          Audio
+                        </p>
+                        <audio src={miNegocio.audio_url} controls className="mt-3 w-full" />
+                      </div>
+                    )}
+
+                    {miNegocio.fotos.length === 0 && !miNegocio.video_url && !miNegocio.audio_url && (
+                      <p className="mt-6 rounded-lg border border-dashed border-border p-4 text-sm text-muted-foreground">
+                        Todavía no has añadido fotos extra, vídeo ni audio a tu ficha. Pulsa
+                        "Editar" para completarla.
+                      </p>
+                    )}
+                  </div>
+                </>
               ) : (
                 <div className="p-6">
                   <div className="flex items-start gap-4">
