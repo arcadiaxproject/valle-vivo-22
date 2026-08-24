@@ -7,7 +7,6 @@ import { Explora } from "@/components/site/Explora";
 import { Historias } from "@/components/site/Historias";
 import { Ayudar } from "@/components/site/Ayudar";
 import { Pueblos } from "@/components/site/Pueblos";
-import { CtaNegocios } from "@/components/site/CtaNegocios";
 import { Footer } from "@/components/site/Footer";
 
 const title = "Sotillo está vivo — Descubre el Valle del Tiétar";
@@ -38,7 +37,6 @@ function Index() {
         <Explora />
         <Historias />
         <Pueblos />
-        <CtaNegocios />
         <Ayudar />
       </main>
       <Footer />
