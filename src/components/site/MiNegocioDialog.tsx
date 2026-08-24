@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { MapPin } from "lucide-react";
+import { MapPin, Trash2 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import {
   CATEGORIAS_NEGOCIO,
   fetchMiNegocio,
   guardarMiNegocio,
-  subirFotoNegocio,
+  subirArchivoNegocio,
 } from "@/lib/negocios";
 import { loadGoogleMaps } from "@/lib/google-maps";
 import {
@@ -37,7 +37,6 @@ export function MiNegocioDialog({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [uploading, setUploading] = useState(false);
 
   const { data: negocio } = useQuery({
     queryKey: ["mi-negocio", user?.id],
@@ -51,7 +50,16 @@ export function MiNegocioDialog({ children }: { children: ReactNode }) {
   const [descripcion, setDescripcion] = useState("");
   const [abierto, setAbierto] = useState(true);
   const [imagen, setImagen] = useState<string | null>(null);
+  const [fotos, setFotos] = useState<string[]>([]);
+  const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [ubicacion, setUbicacion] = useState<Ubicacion | null>(null);
+
+  const [uploadingPortada, setUploadingPortada] = useState(false);
+  const [uploadingFotos, setUploadingFotos] = useState(false);
+  const [uploadingVideo, setUploadingVideo] = useState(false);
+  const [uploadingAudio, setUploadingAudio] = useState(false);
+  const uploading = uploadingPortada || uploadingFotos || uploadingVideo || uploadingAudio;
 
   const direccionInputRef = useRef<HTMLInputElement>(null);
 
@@ -63,6 +71,9 @@ export function MiNegocioDialog({ children }: { children: ReactNode }) {
     setDescripcion(negocio.descripcion);
     setAbierto(negocio.abierto ?? true);
     setImagen(negocio.imagen);
+    setFotos(negocio.fotos);
+    setVideoUrl(negocio.video_url);
+    setAudioUrl(negocio.audio_url);
     if (negocio.lat != null && negocio.lng != null) {
       const u = { direccion: negocio.direccion ?? "", lat: negocio.lat, lng: negocio.lng };
       setUbicacion(u);
@@ -113,16 +124,58 @@ export function MiNegocioDialog({ children }: { children: ReactNode }) {
     };
   }, [open]);
 
-  async function handleFile(file: File) {
+  async function handlePortada(file: File) {
     if (!user) return;
-    setUploading(true);
+    setUploadingPortada(true);
     try {
-      const url = await subirFotoNegocio(user.id, file);
-      setImagen(url);
+      setImagen(await subirArchivoNegocio(user.id, file));
     } catch {
       toast.error("No se ha podido subir la foto");
     } finally {
-      setUploading(false);
+      setUploadingPortada(false);
+    }
+  }
+
+  async function handleFotosExtra(files: FileList) {
+    if (!user) return;
+    setUploadingFotos(true);
+    try {
+      const nuevas = await Promise.all(
+        Array.from(files).map((file) => subirArchivoNegocio(user.id, file)),
+      );
+      setFotos((prev) => [...prev, ...nuevas]);
+    } catch {
+      toast.error("No se han podido subir algunas fotos");
+    } finally {
+      setUploadingFotos(false);
+    }
+  }
+
+  function quitarFoto(url: string) {
+    setFotos((prev) => prev.filter((f) => f !== url));
+  }
+
+  async function handleVideo(file: File) {
+    if (!user) return;
+    setUploadingVideo(true);
+    try {
+      setVideoUrl(await subirArchivoNegocio(user.id, file));
+    } catch {
+      toast.error("No se ha podido subir el vídeo");
+    } finally {
+      setUploadingVideo(false);
+    }
+  }
+
+  async function handleAudio(file: File) {
+    if (!user) return;
+    setUploadingAudio(true);
+    try {
+      setAudioUrl(await subirArchivoNegocio(user.id, file));
+    } catch {
+      toast.error("No se ha podido subir el audio");
+    } finally {
+      setUploadingAudio(false);
     }
   }
 
@@ -139,6 +192,9 @@ export function MiNegocioDialog({ children }: { children: ReactNode }) {
         municipio,
         descripcion,
         imagen,
+        fotos,
+        video_url: videoUrl,
+        audio_url: audioUrl,
         abierto,
         direccion: ubicacion?.direccion ?? direccionInputRef.current?.value ?? null,
         lat: ubicacion?.lat ?? null,
@@ -158,7 +214,7 @@ export function MiNegocioDialog({ children }: { children: ReactNode }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Mi negocio</DialogTitle>
           <DialogDescription>
@@ -168,11 +224,11 @@ export function MiNegocioDialog({ children }: { children: ReactNode }) {
 
         <form onSubmit={handleSubmit} className="grid gap-4">
           <div className="grid gap-2">
-            <Label htmlFor="foto">Foto del negocio</Label>
+            <Label htmlFor="foto">Foto de portada</Label>
             {imagen && (
               <img
                 src={imagen}
-                alt="Foto del negocio"
+                alt="Foto de portada"
                 className="h-40 w-full rounded-lg object-cover"
               />
             )}
@@ -180,13 +236,102 @@ export function MiNegocioDialog({ children }: { children: ReactNode }) {
               id="foto"
               type="file"
               accept="image/*"
-              disabled={uploading}
+              disabled={uploadingPortada}
               onChange={(e) => {
                 const file = e.target.files?.[0];
-                if (file) void handleFile(file);
+                if (file) void handlePortada(file);
               }}
             />
-            {uploading && <p className="text-xs text-muted-foreground">Subiendo foto…</p>}
+            {uploadingPortada && <p className="text-xs text-muted-foreground">Subiendo foto…</p>}
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="fotos-extra">Más fotos</Label>
+            {fotos.length > 0 && (
+              <div className="grid grid-cols-4 gap-2">
+                {fotos.map((url) => (
+                  <div key={url} className="group relative aspect-square overflow-hidden rounded-lg">
+                    <img src={url} alt="" className="size-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => quitarFoto(url)}
+                      aria-label="Quitar foto"
+                      className="absolute inset-0 flex items-center justify-center bg-black/50 text-white opacity-0 transition-opacity group-hover:opacity-100"
+                    >
+                      <Trash2 className="size-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+            <Input
+              id="fotos-extra"
+              type="file"
+              accept="image/*"
+              multiple
+              disabled={uploadingFotos}
+              onChange={(e) => {
+                if (e.target.files?.length) void handleFotosExtra(e.target.files);
+                e.target.value = "";
+              }}
+            />
+            {uploadingFotos && <p className="text-xs text-muted-foreground">Subiendo fotos…</p>}
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="video">Vídeo (opcional)</Label>
+            {videoUrl && (
+              <video src={videoUrl} controls className="w-full rounded-lg" />
+            )}
+            <div className="flex gap-2">
+              <Input
+                id="video"
+                type="file"
+                accept="video/*"
+                disabled={uploadingVideo}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) void handleVideo(file);
+                }}
+              />
+              {videoUrl && (
+                <button
+                  type="button"
+                  onClick={() => setVideoUrl(null)}
+                  className="shrink-0 rounded-lg border border-border px-3 text-sm text-muted-foreground transition-colors hover:bg-secondary"
+                >
+                  Quitar
+                </button>
+              )}
+            </div>
+            {uploadingVideo && <p className="text-xs text-muted-foreground">Subiendo vídeo…</p>}
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="audio">Audio (opcional)</Label>
+            {audioUrl && <audio src={audioUrl} controls className="w-full" />}
+            <div className="flex gap-2">
+              <Input
+                id="audio"
+                type="file"
+                accept="audio/*"
+                disabled={uploadingAudio}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) void handleAudio(file);
+                }}
+              />
+              {audioUrl && (
+                <button
+                  type="button"
+                  onClick={() => setAudioUrl(null)}
+                  className="shrink-0 rounded-lg border border-border px-3 text-sm text-muted-foreground transition-colors hover:bg-secondary"
+                >
+                  Quitar
+                </button>
+              )}
+            </div>
+            {uploadingAudio && <p className="text-xs text-muted-foreground">Subiendo audio…</p>}
           </div>
 
           <div className="grid gap-2">

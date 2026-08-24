@@ -15,6 +15,9 @@ export type Database = {
           lat: number | null;
           lng: number | null;
           owner_id: string | null;
+          fotos: string[];
+          video_url: string | null;
+          audio_url: string | null;
           created_at: string;
         };
         Insert: {
@@ -30,6 +33,9 @@ export type Database = {
           lat?: number | null;
           lng?: number | null;
           owner_id?: string | null;
+          fotos?: string[];
+          video_url?: string | null;
+          audio_url?: string | null;
           created_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["negocios"]["Insert"]>;

@@ -64,6 +64,14 @@ function NegocioPage() {
                 />
               )}
 
+              {negocio.video_url && (
+                <video
+                  src={negocio.video_url}
+                  controls
+                  className="mt-4 w-full rounded-2xl"
+                />
+              )}
+
               <p className="eyebrow mt-8 text-terracotta">
                 {negocio.categoria} · {negocio.municipio}
               </p>
@@ -97,6 +105,26 @@ function NegocioPage() {
               <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
                 {negocio.descripcion}
               </p>
+
+              {negocio.audio_url && (
+                <audio src={negocio.audio_url} controls className="mt-6 w-full" />
+              )}
+
+              {negocio.fotos.length > 0 && (
+                <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                  {negocio.fotos.map((url) => (
+                    <img
+                      key={url}
+                      src={url}
+                      alt={negocio.nombre}
+                      width={600}
+                      height={450}
+                      loading="lazy"
+                      className="aspect-[4/3] w-full rounded-xl object-cover"
+                    />
+                  ))}
+                </div>
+              )}
 
               {negocio.direccion && (
                 <p className="mt-6 flex items-start gap-2 text-sm text-muted-foreground">

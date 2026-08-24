@@ -2,8 +2,6 @@ import { Link } from "@tanstack/react-router";
 import type { Negocio } from "@/lib/negocios";
 import { Reveal } from "./Reveal";
 
-const HISTORIA_BADGE = "Historia del Valle";
-
 function Estado({ abierto }: { abierto: boolean | null }) {
   if (abierto === null) return null;
   return (
@@ -18,8 +16,7 @@ function Estado({ abierto }: { abierto: boolean | null }) {
 }
 
 export function NegocioCard({ n, delay = 0 }: { n: Negocio; delay?: number }) {
-  const tieneHistoria = n.badges.includes(HISTORIA_BADGE);
-  const otrosBadges = n.badges.filter((b) => b !== HISTORIA_BADGE);
+  const tieneHistoria = Boolean(n.video_url);
 
   return (
     <Reveal delay={delay}>
@@ -44,7 +41,7 @@ export function NegocioCard({ n, delay = 0 }: { n: Negocio; delay?: number }) {
                 Conoce su historia
               </span>
             )}
-            {otrosBadges.map((b) => (
+            {n.badges.map((b) => (
               <span
                 key={b}
                 className="rounded-md bg-background/92 px-2.5 py-1 text-xs font-semibold text-forest backdrop-blur-sm"

@@ -45,7 +45,7 @@ export async function guardarMiNegocio(input: NegocioInput): Promise<Negocio> {
   return data;
 }
 
-export async function subirFotoNegocio(ownerId: string, file: File): Promise<string> {
+export async function subirArchivoNegocio(ownerId: string, file: File): Promise<string> {
   const ext = file.name.split(".").pop();
   const path = `${ownerId}/${crypto.randomUUID()}.${ext}`;
   const { error } = await supabase.storage.from("negocios").upload(path, file, {
