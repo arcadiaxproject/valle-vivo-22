@@ -1,4 +1,4 @@
-import editorial from "@/assets/editorial-negocio.jpg";
+import apicultor from "@/assets/hist-2.jpg";
 import { Reveal } from "./Reveal";
 
 const acciones = [
@@ -19,7 +19,7 @@ export function Ayudar() {
       className="relative flex min-h-screen flex-col justify-center overflow-hidden py-24 text-primary-foreground sm:py-32"
     >
       <img
-        src={editorial}
+        src={apicultor}
         alt=""
         aria-hidden="true"
         className="absolute inset-0 size-full object-cover"

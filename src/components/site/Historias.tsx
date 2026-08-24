@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Pause, Play } from "lucide-react";
 import { fetchHistorias, type Historia } from "@/lib/historias";
 import { shuffle } from "@/lib/utils";
+import fondoHistorias from "@/assets/hist-1.jpg";
 import { Reveal } from "./Reveal";
 
 function PlayButton({
@@ -158,9 +159,17 @@ export function Historias() {
   return (
     <section
       id="historias"
-      className="flex h-screen flex-col justify-center overflow-hidden bg-bark py-10 sm:py-14"
+      className="relative flex h-screen flex-col justify-center overflow-hidden bg-bark py-10 sm:py-14"
     >
-      <div className="container-page">
+      <img
+        src={fondoHistorias}
+        alt=""
+        aria-hidden="true"
+        className="absolute inset-0 size-full object-cover"
+      />
+      <div className="absolute inset-0 bg-[oklch(0.14_0.02_60/0.85)]" />
+
+      <div className="container-page relative">
         <Reveal>
           <p className="eyebrow text-terracotta">Historias del Valle</p>
           <h2 className="mt-3 max-w-xl text-3xl font-semibold leading-[1.05] text-primary-foreground sm:text-4xl">
