@@ -125,7 +125,7 @@ function CuentaPage() {
   return (
     <>
       <Navbar />
-      <main className="flex h-screen flex-col overflow-hidden bg-stone">
+      <main className="flex min-h-screen flex-col bg-stone lg:h-screen lg:overflow-hidden">
         <div className="shrink-0 border-b border-border bg-card pt-24 sm:pt-28">
           <div className="container-page flex items-center justify-between gap-4 pb-4">
             <Link
