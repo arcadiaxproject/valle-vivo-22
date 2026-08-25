@@ -88,7 +88,11 @@ function CategoriaPage() {
             <div className="mt-10 max-w-md">
               <span
                 className="inline-flex items-center rounded-full border px-3 py-1 text-xs font-bold uppercase tracking-[0.18em]"
-                style={{ color: acento, borderColor: `${acento}66`, backgroundColor: `${acento}1a` }}
+                style={{
+                  color: acento,
+                  borderColor: `${acento}66`,
+                  backgroundColor: `${acento}1a`,
+                }}
               >
                 {categoria}
               </span>
@@ -100,18 +104,31 @@ function CategoriaPage() {
                   {descripcion}
                 </p>
               )}
-              <p className="mt-6 text-sm text-primary-foreground/50">
-                {isPending
-                  ? "Cargando…"
-                  : `${negocios.length} ${negocios.length === 1 ? "negocio" : "negocios"} en esta categoría`}
-              </p>
+              {!isPending && (
+                <div className="mt-7 flex items-center gap-6 border-t border-primary-foreground/15 pt-5">
+                  <span className="flex items-baseline gap-1.5">
+                    <span className="font-serif text-xl font-semibold">{negocios.length}</span>
+                    <span className="text-xs text-primary-foreground/55">
+                      {negocios.length === 1 ? "negocio" : "negocios"}
+                    </span>
+                  </span>
+                  {negocios.length > 0 && (
+                    <span className="flex items-center gap-1.5 text-xs text-primary-foreground/65">
+                      <span className="size-1.5 rounded-full bg-leaf" aria-hidden="true" />
+                      {negocios.filter((n) => n.abierto).length} abiertos ahora
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>
 
         <div className="container-page border-t border-primary-foreground/10 py-16 sm:py-20">
           {isError && (
-            <p className="text-sm text-primary-foreground/60">No se han podido cargar los negocios.</p>
+            <p className="text-sm text-primary-foreground/60">
+              No se han podido cargar los negocios.
+            </p>
           )}
 
           {isPending && (

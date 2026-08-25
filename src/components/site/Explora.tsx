@@ -10,12 +10,12 @@ import mapa from "@/assets/mapa.jpg";
 import { Reveal } from "./Reveal";
 
 const categorias = [
-  { name: "Pueblos", img: pueblos, big: true },
-  { name: "Naturaleza", img: naturaleza },
-  { name: "Comer", img: comer },
-  { name: "Dormir", img: dormir },
-  { name: "Qué hacer", img: hacer },
-  { name: "Comercio local", img: comercio },
+  { name: "Pueblos", img: pueblos, big: true, accent: "#c1502e" },
+  { name: "Naturaleza", img: naturaleza, accent: "#4c6a3f" },
+  { name: "Comer", img: comer, accent: "#c1502e" },
+  { name: "Dormir", img: dormir, accent: "#b9902e" },
+  { name: "Qué hacer", img: hacer, accent: "#4c6a3f" },
+  { name: "Comercio local", img: comercio, accent: "#b9902e" },
 ];
 
 export function Explora() {
@@ -53,7 +53,9 @@ export function Explora() {
                   ? { to: "/", hash: "pueblos" }
                   : { to: "/categoria/$categoria", params: { categoria: c.name } })}
                 className={`group relative block overflow-hidden rounded-xl ${
-                  c.big ? "col-span-2 aspect-[16/9] sm:col-span-1 sm:aspect-[4/3]" : "aspect-square sm:aspect-[4/3]"
+                  c.big
+                    ? "col-span-2 aspect-[16/9] sm:col-span-1 sm:aspect-[4/3]"
+                    : "aspect-square sm:aspect-[4/3]"
                 }`}
               >
                 <img
@@ -65,6 +67,21 @@ export function Explora() {
                   className="size-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                 />
                 <span className="absolute inset-0 bg-[linear-gradient(to_top,oklch(0.14_0.02_60/0.85),transparent_50%)]" />
+                <span
+                  className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[0.65rem] font-bold uppercase tracking-widest backdrop-blur-sm sm:left-5 sm:top-5"
+                  style={{
+                    color: c.accent,
+                    borderColor: `${c.accent}80`,
+                    backgroundColor: "oklch(0.14 0.02 60 / 0.55)",
+                  }}
+                >
+                  <span
+                    className="size-1.5 rounded-full"
+                    style={{ backgroundColor: c.accent }}
+                    aria-hidden="true"
+                  />
+                  {c.name}
+                </span>
                 <span className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-2 p-4 sm:p-5">
                   <span
                     className={`font-serif font-semibold text-primary-foreground ${

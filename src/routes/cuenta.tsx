@@ -146,9 +146,16 @@ function CuentaPage() {
         </div>
 
         <div className="container-page grid min-h-0 flex-1 gap-6 py-5 lg:grid-cols-[260px_1fr]">
-          {/* Sidebar de perfil, estilo GitHub */}
+          {/* Sidebar de perfil */}
           <aside className="min-h-0 overflow-y-auto">
-            <div className="rounded-2xl border border-border bg-card p-5 shadow-soft">
+            <div className="relative overflow-hidden rounded-2xl p-5 text-primary-foreground shadow-lift">
+              <div
+                className="absolute inset-0 -z-10"
+                style={{
+                  background:
+                    "radial-gradient(140% 90% at 20% 0%, #2c4126 0%, var(--forest-deep) 55%, var(--bark) 100%)",
+                }}
+              />
               <div className="group relative w-fit">
                 {profile?.avatar_url ? (
                   <img
@@ -156,11 +163,11 @@ function CuentaPage() {
                     alt={profile.nombre}
                     width={80}
                     height={80}
-                    className="size-20 rounded-full object-cover ring-4 ring-secondary"
+                    className="size-20 rounded-full object-cover ring-4 ring-primary-foreground/15"
                   />
                 ) : (
-                  <div className="flex size-20 items-center justify-center rounded-full bg-secondary ring-4 ring-secondary">
-                    <UserRound className="size-8 text-muted-foreground" />
+                  <div className="flex size-20 items-center justify-center rounded-full bg-primary-foreground/10 ring-4 ring-primary-foreground/15">
+                    <UserRound className="size-8 text-primary-foreground/70" />
                   </div>
                 )}
                 <button
@@ -168,7 +175,7 @@ function CuentaPage() {
                   onClick={() => avatarInputRef.current?.click()}
                   disabled={uploadingAvatar}
                   aria-label="Cambiar foto de perfil"
-                  className="absolute -bottom-1 -right-1 flex size-7 items-center justify-center rounded-full border-2 border-card bg-accent text-accent-foreground shadow-soft transition-transform hover:scale-105 disabled:opacity-60"
+                  className="absolute -bottom-1 -right-1 flex size-7 items-center justify-center rounded-full border-2 border-forest-deep bg-accent text-accent-foreground shadow-soft transition-transform hover:scale-105 disabled:opacity-60"
                 >
                   <Camera className="size-3.5" />
                 </button>
@@ -181,29 +188,29 @@ function CuentaPage() {
                 />
               </div>
               {uploadingAvatar && (
-                <p className="mt-1.5 text-xs text-muted-foreground">Subiendo foto…</p>
+                <p className="mt-1.5 text-xs text-primary-foreground/60">Subiendo foto…</p>
               )}
 
-              <h1 className="mt-3 text-xl font-bold leading-tight">
+              <h1 className="mt-3 font-serif text-xl font-semibold leading-tight">
                 {profile?.nombre ?? user.email}
               </h1>
-              <p className="mt-0.5 truncate text-sm text-muted-foreground">{user.email}</p>
+              <p className="mt-0.5 truncate text-sm text-primary-foreground/55">{user.email}</p>
 
-              <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1 text-xs font-semibold uppercase tracking-wide text-secondary-foreground">
+              <span className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-terracotta/50 bg-terracotta/20 px-3 py-1 text-xs font-bold uppercase tracking-wide text-[#f0a67c]">
                 {esComercio ? <Store className="size-3.5" /> : <UserRound className="size-3.5" />}
                 {profile?.role ? ROLE_LABEL[profile.role] : "Sin definir"}
               </span>
 
-              <dl className="mt-4 space-y-2.5 border-t border-border pt-4 text-sm">
+              <dl className="mt-4 space-y-2.5 border-t border-primary-foreground/12 pt-4 text-sm">
                 <div className="flex items-center justify-between gap-3">
-                  <dt className="flex items-center gap-2 text-muted-foreground">
-                    <Award className="size-4 text-terracotta" />
+                  <dt className="flex items-center gap-2 text-primary-foreground/55">
+                    <Award className="size-4 text-[#f0a67c]" />
                     Distintivo
                   </dt>
                   <dd className="font-semibold">{profile?.distintivo ? "Activo" : "Todavía no"}</dd>
                 </div>
                 <div className="flex items-center justify-between gap-3">
-                  <dt className="flex items-center gap-2 text-muted-foreground">
+                  <dt className="flex items-center gap-2 text-primary-foreground/55">
                     <CalendarDays className="size-4 text-wood" />
                     Miembro desde
                   </dt>
@@ -329,27 +336,52 @@ function PerfilNegocioEmpresa({ negocio, verificado }: { negocio: Negocio; verif
   return (
     <div className="flex h-full min-h-0 flex-col">
       {/* Cabecera de empresa */}
-      <div className="flex shrink-0 flex-wrap items-start justify-between gap-4 border-b border-border bg-gradient-to-br from-secondary/50 to-transparent px-5 py-4">
-        <div className="min-w-0">
+      <div className="relative shrink-0 overflow-hidden">
+        {negocio.imagen ? (
+          <img src={negocio.imagen} alt="" className="absolute inset-0 size-full object-cover" />
+        ) : (
+          <div className="absolute inset-0" style={{ backgroundColor: `${acento}22` }} />
+        )}
+        <div className="absolute inset-0 bg-[linear-gradient(to_top,oklch(0.14_0.02_60/0.88)_0%,oklch(0.14_0.02_60/0.05)_65%)]" />
+
+        <div className="relative flex flex-wrap items-start justify-between gap-4 px-5 py-4">
+          <div className="min-w-0" />
+          <div className="flex shrink-0 items-center gap-2.5">
+            <Link
+              to="/negocio/$id"
+              params={{ id: negocio.id }}
+              className="inline-flex items-center gap-2 rounded-lg border border-primary-foreground/25 bg-[oklch(0.14_0.02_60/0.5)] px-4 py-2.5 text-sm font-semibold text-primary-foreground backdrop-blur-sm transition-colors hover:bg-[oklch(0.14_0.02_60/0.7)]"
+            >
+              <ExternalLink className="size-4" />
+              Ver ficha pública
+            </Link>
+            <MiNegocioDialog>
+              <button className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90">
+                <Pencil className="size-4" />
+                Editar
+              </button>
+            </MiNegocioDialog>
+          </div>
+        </div>
+
+        <div className="relative px-5 pb-5 pt-16 sm:pt-24">
           <div className="flex flex-wrap items-center gap-2">
             <span
               className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-[0.7rem] font-bold uppercase tracking-widest"
-              style={{ color: acento, borderColor: `${acento}55`, backgroundColor: `${acento}14` }}
+              style={{ color: acento, borderColor: `${acento}90`, backgroundColor: `${acento}2e` }}
             >
               {negocio.categoria}
             </span>
             {verificado && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-forest/10 px-2.5 py-0.5 text-[0.7rem] font-bold uppercase tracking-widest text-forest">
+              <span className="inline-flex items-center gap-1 rounded-full border border-forest/60 bg-forest/25 px-2.5 py-0.5 text-[0.7rem] font-bold uppercase tracking-widest text-[#a9c99b]">
                 <BadgeCheck className="size-3.5" />
                 Verificado
               </span>
             )}
             {negocio.abierto !== null && (
-              <span
-                className={`inline-flex items-center gap-1.5 text-xs font-semibold ${negocio.abierto ? "text-forest" : "text-earth"}`}
-              >
+              <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary-foreground/85">
                 <span
-                  className={`size-1.5 rounded-full ${negocio.abierto ? "bg-forest" : "bg-earth"}`}
+                  className={`size-1.5 rounded-full ${negocio.abierto ? "bg-leaf" : "bg-earth"}`}
                   aria-hidden="true"
                 />
                 {negocio.abierto ? "Abierto ahora" : "Cerrado"}
@@ -357,31 +389,16 @@ function PerfilNegocioEmpresa({ negocio, verificado }: { negocio: Negocio; verif
             )}
           </div>
 
-          <h2 className="mt-2.5 truncate text-2xl font-bold leading-tight">{negocio.nombre}</h2>
+          <h2 className="mt-2.5 truncate font-serif text-2xl font-semibold leading-tight text-primary-foreground">
+            {negocio.nombre}
+          </h2>
 
-          <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
+          <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-primary-foreground/70">
             <span className="inline-flex items-center gap-1.5">
               <MapPin className="size-3.5 shrink-0" />
               {negocio.direccion ? `${negocio.direccion}, ${negocio.municipio}` : negocio.municipio}
             </span>
           </div>
-        </div>
-
-        <div className="flex shrink-0 items-center gap-2.5">
-          <Link
-            to="/negocio/$id"
-            params={{ id: negocio.id }}
-            className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-secondary"
-          >
-            <ExternalLink className="size-4" />
-            Ver ficha pública
-          </Link>
-          <MiNegocioDialog>
-            <button className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90">
-              <Pencil className="size-4" />
-              Editar
-            </button>
-          </MiNegocioDialog>
         </div>
       </div>
 
