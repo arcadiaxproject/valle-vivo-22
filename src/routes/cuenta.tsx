@@ -29,12 +29,15 @@ export const Route = createFileRoute("/cuenta")({
   component: CuentaPage,
 });
 
+type Tab = "negocio" | "cuenta";
+
 function CuentaPage() {
   const { user, profile, loading, signOut, updateProfile } = useAuth();
   const navigate = useNavigate();
 
   const [nombre, setNombre] = useState("");
   const [saving, setSaving] = useState(false);
+  const [tab, setTab] = useState<Tab>("negocio");
 
   useEffect(() => {
     if (profile) setNombre(profile.nombre);
@@ -60,6 +63,9 @@ function CuentaPage() {
     );
   }
 
+  const esComercio = profile?.role === "comercio";
+  const activeTab: Tab = esComercio ? tab : "cuenta";
+
   const miembroDesde = new Date(user.created_at).toLocaleDateString("es-ES", {
     day: "numeric",
     month: "long",
@@ -83,146 +89,163 @@ function CuentaPage() {
     <>
       <Navbar />
       <main className="min-h-screen bg-stone pb-24">
-        {/* Cabecera */}
-        <div className="bg-bark pb-20 pt-32 text-primary-foreground sm:pt-40">
-          <div className="container-page">
+        <div className="border-b border-border bg-card pt-32 sm:pt-36">
+          <div className="container-page flex items-center justify-between gap-4 pb-6">
             <Link
               to="/"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-primary-foreground/70 transition-opacity hover:opacity-80"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground transition-opacity hover:opacity-70"
             >
               <ArrowLeft className="size-4" />
               Volver al Valle
             </Link>
-
-            <div className="mt-8 flex flex-wrap items-center justify-between gap-6">
-              <div className="flex items-center gap-5">
-                {profile?.avatar_url ? (
-                  <img
-                    src={profile.avatar_url}
-                    alt={profile.nombre}
-                    width={88}
-                    height={88}
-                    className="size-20 rounded-full object-cover ring-4 ring-primary-foreground/15 sm:size-22"
-                  />
-                ) : (
-                  <div className="flex size-20 items-center justify-center rounded-full bg-primary-foreground/10 ring-4 ring-primary-foreground/15 sm:size-22">
-                    <UserRound className="size-8 text-primary-foreground/70" />
-                  </div>
-                )}
-                <div className="min-w-0">
-                  <h1 className="text-3xl font-semibold leading-tight sm:text-4xl">
-                    {profile?.nombre ?? user.email}
-                  </h1>
-                  <p className="mt-1 truncate text-sm text-primary-foreground/60">{user.email}</p>
-                  <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-primary-foreground/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary-foreground/85">
-                    {profile?.role === "comercio" ? (
-                      <Store className="size-3.5" />
-                    ) : (
-                      <UserRound className="size-3.5" />
-                    )}
-                    {profile?.role ? ROLE_LABEL[profile.role] : "Sin definir"}
-                  </span>
-                </div>
-              </div>
-
-              <button
-                onClick={() => void signOut()}
-                className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-primary-foreground/25 px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-primary-foreground/10"
-              >
-                <LogOut className="size-4" />
-                Cerrar sesión
-              </button>
-            </div>
+            <button
+              onClick={() => void signOut()}
+              className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-semibold transition-colors hover:bg-secondary"
+            >
+              <LogOut className="size-4" />
+              Cerrar sesión
+            </button>
           </div>
         </div>
 
-        <div className="container-page -mt-10 max-w-3xl">
-          {/* Stats */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <div className="rounded-2xl border border-border bg-card p-5 shadow-soft">
-              <UserRound className="size-5 text-forest" />
-              <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                Tipo de cuenta
-              </p>
-              <p className="mt-1 text-lg font-bold">
-                {profile?.role ? ROLE_LABEL[profile.role] : "Sin definir"}
-              </p>
-            </div>
-            <div className="rounded-2xl border border-border bg-card p-5 shadow-soft">
-              <Award className="size-5 text-terracotta" />
-              <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                Distintivo
-              </p>
-              <p className="mt-1 text-lg font-bold">
-                {profile?.distintivo ? "Activo" : "Todavía no"}
-              </p>
-            </div>
-            <div className="rounded-2xl border border-border bg-card p-5 shadow-soft">
-              <CalendarDays className="size-5 text-wood" />
-              <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                Miembro desde
-              </p>
-              <p className="mt-1 text-lg font-bold">{miembroDesde}</p>
-            </div>
-          </div>
-
-          {/* Mi negocio */}
-          {profile?.role === "comercio" && (
-            <div className="mt-6 overflow-hidden rounded-2xl border border-border bg-card shadow-soft">
-              {miNegocio ? (
-                <PerfilNegocioAirbnb negocio={miNegocio} />
+        <div className="container-page mt-8 grid gap-8 lg:grid-cols-[272px_1fr]">
+          {/* Sidebar de perfil, estilo GitHub */}
+          <aside className="h-fit space-y-5 lg:sticky lg:top-28">
+            <div className="rounded-2xl border border-border bg-card p-6 shadow-soft">
+              {profile?.avatar_url ? (
+                <img
+                  src={profile.avatar_url}
+                  alt={profile.nombre}
+                  width={96}
+                  height={96}
+                  className="size-24 rounded-full object-cover ring-4 ring-secondary"
+                />
               ) : (
-                <div className="p-6">
-                  <div className="flex items-start gap-4">
-                    <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-secondary">
-                      <Store className="size-5 text-forest" />
+                <div className="flex size-24 items-center justify-center rounded-full bg-secondary ring-4 ring-secondary">
+                  <UserRound className="size-9 text-muted-foreground" />
+                </div>
+              )}
+
+              <h1 className="mt-4 text-xl font-bold leading-tight">
+                {profile?.nombre ?? user.email}
+              </h1>
+              <p className="mt-0.5 truncate text-sm text-muted-foreground">{user.email}</p>
+
+              <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1 text-xs font-semibold uppercase tracking-wide text-secondary-foreground">
+                {esComercio ? <Store className="size-3.5" /> : <UserRound className="size-3.5" />}
+                {profile?.role ? ROLE_LABEL[profile.role] : "Sin definir"}
+              </span>
+
+              <dl className="mt-5 space-y-3 border-t border-border pt-5 text-sm">
+                <div className="flex items-center justify-between gap-3">
+                  <dt className="flex items-center gap-2 text-muted-foreground">
+                    <Award className="size-4 text-terracotta" />
+                    Distintivo
+                  </dt>
+                  <dd className="font-semibold">{profile?.distintivo ? "Activo" : "Todavía no"}</dd>
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <dt className="flex items-center gap-2 text-muted-foreground">
+                    <CalendarDays className="size-4 text-wood" />
+                    Miembro desde
+                  </dt>
+                  <dd className="font-semibold">{miembroDesde}</dd>
+                </div>
+              </dl>
+            </div>
+          </aside>
+
+          {/* Contenido con pestañas */}
+          <div className="min-w-0">
+            <div className="flex gap-6 border-b border-border">
+              {esComercio && (
+                <button
+                  onClick={() => setTab("negocio")}
+                  className={`flex items-center gap-2 border-b-2 pb-3 text-sm font-semibold transition-colors ${
+                    activeTab === "negocio"
+                      ? "border-forest text-foreground"
+                      : "border-transparent text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <Store className="size-4" />
+                  Mi negocio
+                </button>
+              )}
+              <button
+                onClick={() => setTab("cuenta")}
+                className={`flex items-center gap-2 border-b-2 pb-3 text-sm font-semibold transition-colors ${
+                  activeTab === "cuenta"
+                    ? "border-forest text-foreground"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <UserRound className="size-4" />
+                Cuenta
+              </button>
+            </div>
+
+            <div className="mt-6">
+              {activeTab === "negocio" && esComercio && (
+                <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-soft">
+                  {miNegocio ? (
+                    <PerfilNegocioAirbnb negocio={miNegocio} />
+                  ) : (
+                    <div className="p-6">
+                      <div className="flex items-start gap-4">
+                        <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-secondary">
+                          <Store className="size-5 text-forest" />
+                        </div>
+                        <div>
+                          <h2 className="text-lg font-bold">
+                            Todavía no has dado de alta tu negocio
+                          </h2>
+                          <p className="mt-1 text-sm text-muted-foreground">
+                            Añade tu ficha para aparecer en el listado de negocios y en el mapa del
+                            Valle.
+                          </p>
+                        </div>
+                      </div>
+                      <MiNegocioDialog>
+                        <button className="mt-4 rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90">
+                          Añadir mi negocio
+                        </button>
+                      </MiNegocioDialog>
                     </div>
-                    <div>
-                      <h2 className="text-lg font-bold">Todavía no has dado de alta tu negocio</h2>
-                      <p className="mt-1 text-sm text-muted-foreground">
-                        Añade tu ficha para aparecer en el listado de negocios y en el mapa del
-                        Valle.
+                  )}
+                </div>
+              )}
+
+              {activeTab === "cuenta" && (
+                <div className="max-w-sm rounded-2xl border border-border bg-card p-6 shadow-soft">
+                  <h2 className="text-lg font-bold">Editar datos</h2>
+                  <form onSubmit={handleSubmit} className="mt-4 grid gap-4">
+                    <div className="grid gap-2">
+                      <Label htmlFor="nombre">Nombre</Label>
+                      <Input
+                        id="nombre"
+                        value={nombre}
+                        onChange={(e) => setNombre(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="email">Email</Label>
+                      <Input id="email" value={user.email ?? ""} disabled />
+                      <p className="text-xs text-muted-foreground">
+                        El email viene de tu cuenta de Google y no se puede cambiar aquí.
                       </p>
                     </div>
-                  </div>
-                  <MiNegocioDialog>
-                    <button className="mt-4 rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90">
-                      Añadir mi negocio
+                    <button
+                      type="submit"
+                      disabled={saving}
+                      className="mt-1 w-fit rounded-lg bg-accent px-6 py-2.5 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90 disabled:opacity-60"
+                    >
+                      {saving ? "Guardando…" : "Guardar cambios"}
                     </button>
-                  </MiNegocioDialog>
+                  </form>
                 </div>
               )}
             </div>
-          )}
-
-          {/* Editar datos */}
-          <div className="mt-6 rounded-2xl border border-border bg-card p-6 shadow-soft">
-            <h2 className="text-lg font-bold">Editar datos</h2>
-            <form onSubmit={handleSubmit} className="mt-4 grid gap-4 sm:max-w-sm">
-              <div className="grid gap-2">
-                <Label htmlFor="nombre">Nombre</Label>
-                <Input
-                  id="nombre"
-                  value={nombre}
-                  onChange={(e) => setNombre(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" value={user.email ?? ""} disabled />
-                <p className="text-xs text-muted-foreground">
-                  El email viene de tu cuenta de Google y no se puede cambiar aquí.
-                </p>
-              </div>
-              <button
-                type="submit"
-                disabled={saving}
-                className="mt-1 w-fit rounded-lg bg-accent px-6 py-2.5 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90 disabled:opacity-60"
-              >
-                {saving ? "Guardando…" : "Guardar cambios"}
-              </button>
-            </form>
           </div>
         </div>
       </main>
