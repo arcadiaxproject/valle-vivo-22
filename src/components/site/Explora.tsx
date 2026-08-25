@@ -49,8 +49,9 @@ export function Explora() {
             {categorias.map((c) => (
               <Link
                 key={c.name}
-                to="/categoria/$categoria"
-                params={{ categoria: c.name }}
+                {...(c.name === "Pueblos"
+                  ? { to: "/", hash: "pueblos" }
+                  : { to: "/categoria/$categoria", params: { categoria: c.name } })}
                 className={`group relative block overflow-hidden rounded-xl ${
                   c.big ? "col-span-2 aspect-[16/9] sm:col-span-1 sm:aspect-[4/3]" : "aspect-square sm:aspect-[4/3]"
                 }`}

@@ -1,4 +1,5 @@
 import { ArrowUpRight } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import p1 from "@/assets/pueblo-1.jpg";
 import p2 from "@/assets/pueblo-2.jpg";
 import p3 from "@/assets/pueblo-3.jpg";
@@ -39,8 +40,9 @@ export function Pueblos() {
         <div className="mt-6 grid gap-5 sm:grid-cols-2">
           {pueblos.map((p, i) => (
             <Reveal key={p.nombre} delay={i * 80}>
-              <a
-                href="#descubre"
+              <Link
+                to="/pueblo/$pueblo"
+                params={{ pueblo: p.nombre }}
                 className="group block overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:border-terracotta/40 hover:shadow-lift"
               >
                 <span className="block h-56 overflow-hidden sm:h-64">
@@ -62,7 +64,7 @@ export function Pueblos() {
                   </span>
                   <ArrowUpRight className="size-5 shrink-0 text-forest transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </span>
-              </a>
+              </Link>
             </Reveal>
           ))}
         </div>
