@@ -15,7 +15,15 @@ function Estado({ abierto }: { abierto: boolean | null }) {
   );
 }
 
-export function NegocioCard({ n, delay = 0 }: { n: Negocio; delay?: number }) {
+export function NegocioCard({
+  n,
+  delay = 0,
+  accent = "#c1502e",
+}: {
+  n: Negocio;
+  delay?: number;
+  accent?: string;
+}) {
   const tieneHistoria = Boolean(n.video_url);
 
   return (
@@ -23,7 +31,8 @@ export function NegocioCard({ n, delay = 0 }: { n: Negocio; delay?: number }) {
       <Link
         to="/negocio/$id"
         params={{ id: n.id }}
-        className="group block h-full overflow-hidden rounded-2xl border border-primary-foreground/10 bg-[#1a1712] text-primary-foreground shadow-[0_1px_2px_rgb(0_0_0_/_0.2),0_16px_36px_-20px_rgb(0_0_0_/_0.6)] transition-all duration-300 hover:-translate-y-0.5 hover:border-terracotta/50"
+        style={{ "--card-accent": accent } as React.CSSProperties}
+        className="group block h-full overflow-hidden rounded-2xl border border-primary-foreground/10 bg-[#1a1712] text-primary-foreground shadow-[0_1px_2px_rgb(0_0_0_/_0.2),0_16px_36px_-20px_rgb(0_0_0_/_0.6)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[color:var(--card-accent)]/60"
       >
         <div className="relative overflow-hidden">
           <img
@@ -63,7 +72,7 @@ export function NegocioCard({ n, delay = 0 }: { n: Negocio; delay?: number }) {
           <p className="mt-2 text-sm leading-relaxed text-primary-foreground/60">{n.descripcion}</p>
           <div className="mt-5 flex items-center justify-between border-t border-primary-foreground/10 pt-4">
             <Estado abierto={n.abierto} />
-            <span className="inline-flex items-center gap-1 text-sm font-semibold text-terracotta opacity-0 transition-all duration-200 group-hover:translate-x-0.5 group-hover:opacity-100">
+            <span className="inline-flex items-center gap-1 text-sm font-semibold text-[color:var(--card-accent)] opacity-0 transition-all duration-200 group-hover:translate-x-0.5 group-hover:opacity-100">
               Visitar →
             </span>
           </div>

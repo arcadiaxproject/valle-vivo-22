@@ -36,12 +36,13 @@ function PuebloPage() {
   const negocios = (data ?? []).filter((n) => n.municipio === pueblo);
   const bgImage = puebloImages[pueblo];
   const descripcion = puebloDescripciones[pueblo];
+  const acento = "#c1502e";
 
   return (
     <>
       <Navbar />
       <main className="min-h-screen bg-bark text-primary-foreground">
-        <div className="relative flex min-h-screen items-center overflow-hidden">
+        <div className="relative flex min-h-[60vh] items-center overflow-hidden sm:min-h-[70vh]">
           {bgImage && (
             <img
               src={bgImage}
@@ -50,21 +51,26 @@ function PuebloPage() {
               className="absolute inset-0 size-full object-cover"
             />
           )}
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,oklch(0.19_0.012_120/0.92)_0%,oklch(0.19_0.012_120/0.75)_32%,oklch(0.19_0.012_120/0.15)_62%,transparent_85%)]" />
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,oklch(0.19_0.012_120/0.94)_0%,oklch(0.19_0.012_120/0.8)_34%,oklch(0.19_0.012_120/0.2)_64%,transparent_88%)]" />
 
           <div className="container-page relative z-10 pt-24 sm:pt-28">
             <Link
               to="/"
               hash="pueblos"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-primary-foreground/80 transition-opacity hover:opacity-70"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-primary-foreground/70 transition-opacity hover:opacity-70"
             >
               <ArrowLeft className="size-4" />
               Volver a los pueblos
             </Link>
 
             <div className="mt-10 max-w-md">
-              <p className="eyebrow text-terracotta">Pueblo</p>
-              <h1 className="mt-4 font-serif text-6xl italic leading-[1.05] sm:text-7xl">
+              <span
+                className="inline-flex items-center rounded-full border px-3 py-1 text-xs font-bold uppercase tracking-[0.18em]"
+                style={{ color: acento, borderColor: `${acento}66`, backgroundColor: `${acento}1a` }}
+              >
+                Pueblo
+              </span>
+              <h1 className="mt-5 font-serif text-6xl italic leading-[1.05] sm:text-7xl">
                 {pueblo}
               </h1>
               {descripcion && (
@@ -72,7 +78,7 @@ function PuebloPage() {
                   {descripcion}
                 </p>
               )}
-              <p className="mt-5 text-sm font-semibold uppercase tracking-widest text-primary-foreground/50">
+              <p className="mt-6 text-sm text-primary-foreground/50">
                 {isPending
                   ? "Cargando…"
                   : `${negocios.length} ${negocios.length === 1 ? "negocio" : "negocios"} en ${pueblo}`}
@@ -81,7 +87,7 @@ function PuebloPage() {
           </div>
         </div>
 
-        <div className="container-page py-16 sm:py-20">
+        <div className="container-page border-t border-primary-foreground/10 py-16 sm:py-20">
           {isError && (
             <p className="text-sm text-primary-foreground/60">No se han podido cargar los negocios.</p>
           )}
@@ -103,7 +109,7 @@ function PuebloPage() {
           {!isPending && !isError && negocios.length > 0 && (
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {negocios.map((n, i) => (
-                <NegocioCard key={n.id} n={n} delay={i * 60} />
+                <NegocioCard key={n.id} n={n} delay={i * 60} accent={acento} />
               ))}
             </div>
           )}
