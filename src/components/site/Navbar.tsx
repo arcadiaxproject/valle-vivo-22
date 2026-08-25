@@ -4,10 +4,10 @@ import { Menu, X } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 
 const links = [
-  { label: "Descubre", href: "#descubre" },
-  { label: "Historias", href: "#historias" },
-  { label: "Pueblos", href: "#pueblos" },
-  { label: "Ayudar", href: "#ayudar" },
+  { label: "Descubre", hash: "descubre" },
+  { label: "Historias", hash: "historias" },
+  { label: "Pueblos", hash: "pueblos" },
+  { label: "Ayudar", hash: "ayudar" },
 ];
 
 function GoogleIcon() {
@@ -108,26 +108,28 @@ export function Navbar() {
       }`}
     >
       <nav className="container-page flex h-18 items-center justify-between gap-6 py-4">
-        <a
-          href="#top"
+        <Link
+          to="/"
+          hash="top"
           className={`text-[1.0625rem] font-extrabold tracking-tight transition-colors ${
             solid ? "text-primary" : "text-primary-foreground"
           }`}
         >
           Sotillo está vivo
-        </a>
+        </Link>
 
         <ul className="hidden items-center gap-7 lg:flex">
           {links.map((l) => (
             <li key={l.label}>
-              <a
-                href={l.href}
+              <Link
+                to="/"
+                hash={l.hash}
                 className={`text-sm font-medium transition-opacity hover:opacity-70 ${
                   solid ? "text-foreground" : "text-primary-foreground"
                 }`}
               >
                 {l.label}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>
@@ -150,13 +152,14 @@ export function Navbar() {
           <ul className="grid gap-1">
             {links.map((l) => (
               <li key={l.label}>
-                <a
-                  href={l.href}
+                <Link
+                  to="/"
+                  hash={l.hash}
                   onClick={() => setOpen(false)}
                   className="block rounded-lg px-2 py-3 text-base font-medium text-foreground hover:bg-secondary"
                 >
                   {l.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
