@@ -23,7 +23,7 @@ export function NegocioCard({ n, delay = 0 }: { n: Negocio; delay?: number }) {
       <Link
         to="/negocio/$id"
         params={{ id: n.id }}
-        className="group block h-full overflow-hidden rounded-2xl border border-primary-foreground/10 bg-primary-foreground/[0.04] text-primary-foreground backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-terracotta/50 hover:bg-primary-foreground/[0.07]"
+        className="group block h-full overflow-hidden rounded-2xl border border-primary-foreground/10 bg-[#1a1712] text-primary-foreground shadow-[0_1px_2px_rgb(0_0_0_/_0.2),0_16px_36px_-20px_rgb(0_0_0_/_0.6)] transition-all duration-300 hover:-translate-y-0.5 hover:border-terracotta/50"
       >
         <div className="relative overflow-hidden">
           <img
@@ -34,22 +34,26 @@ export function NegocioCard({ n, delay = 0 }: { n: Negocio; delay?: number }) {
             loading="lazy"
             className="h-56 w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.04]"
           />
-          <div className="absolute left-4 top-4 flex flex-wrap gap-2">
-            {tieneHistoria && (
-              <span className="flex items-center gap-1.5 rounded-md bg-bark/85 px-2.5 py-1 text-xs font-semibold text-primary-foreground backdrop-blur-sm">
-                <span className="size-1.5 rounded-full bg-terracotta" aria-hidden="true" />
-                Conoce su historia
-              </span>
-            )}
-            {n.badges.map((b) => (
-              <span
-                key={b}
-                className="rounded-md bg-bark/85 px-2.5 py-1 text-xs font-semibold text-leaf backdrop-blur-sm"
-              >
-                {b}
-              </span>
-            ))}
-          </div>
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-[linear-gradient(to_top,#1a1712,transparent)]" />
+
+          {(tieneHistoria || n.badges.length > 0) && (
+            <div className="absolute left-4 top-4 flex flex-wrap gap-2">
+              {tieneHistoria && (
+                <span className="flex items-center gap-1.5 rounded-full border border-white/10 bg-black/55 px-3 py-1 text-[0.7rem] font-semibold uppercase tracking-wide text-primary-foreground backdrop-blur-md">
+                  <span className="size-1.5 rounded-full bg-terracotta" aria-hidden="true" />
+                  Conoce su historia
+                </span>
+              )}
+              {n.badges.map((b) => (
+                <span
+                  key={b}
+                  className="rounded-full border border-white/10 bg-black/55 px-3 py-1 text-[0.7rem] font-semibold uppercase tracking-wide text-primary-foreground backdrop-blur-md"
+                >
+                  {b}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
         <div className="p-6">
           <p className="text-xs font-semibold uppercase tracking-widest text-primary-foreground/45">
@@ -57,9 +61,9 @@ export function NegocioCard({ n, delay = 0 }: { n: Negocio; delay?: number }) {
           </p>
           <h3 className="mt-2 text-xl font-semibold">{n.nombre}</h3>
           <p className="mt-2 text-sm leading-relaxed text-primary-foreground/60">{n.descripcion}</p>
-          <div className="mt-5 flex items-center justify-between">
+          <div className="mt-5 flex items-center justify-between border-t border-primary-foreground/10 pt-4">
             <Estado abierto={n.abierto} />
-            <span className="text-sm font-semibold text-terracotta opacity-0 transition-opacity group-hover:opacity-100">
+            <span className="inline-flex items-center gap-1 text-sm font-semibold text-terracotta opacity-0 transition-all duration-200 group-hover:translate-x-0.5 group-hover:opacity-100">
               Visitar →
             </span>
           </div>
