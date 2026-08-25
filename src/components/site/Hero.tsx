@@ -19,7 +19,7 @@ export function Hero() {
       <div className="container-page relative z-10 pb-24 pt-32 sm:pb-28">
         <p className="eyebrow text-primary-foreground/80">Valle del Tiétar · Ávila</p>
         <h1 className="mt-5 max-w-5xl text-6xl font-semibold leading-[0.92] text-primary-foreground sm:text-8xl lg:text-[9rem]">
-          Sotillo está vivo.
+          Salvar el valle.
         </h1>
         <p className="mt-7 max-w-xl text-lg leading-relaxed text-primary-foreground/85 sm:text-xl">
           Pueblos, bosques y negocios de siempre. Visítalos, consume local, y ayuda a que el

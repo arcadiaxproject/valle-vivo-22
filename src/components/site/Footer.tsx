@@ -13,7 +13,7 @@ export function Footer() {
     <footer className="border-t border-border bg-background py-8">
       <div className="container-page flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
-          <p className="text-sm font-bold text-primary">Sotillo está vivo</p>
+          <p className="text-sm font-bold text-primary">Salvar el valle</p>
           <a
             href="https://instagram.com"
             aria-label="Instagram"

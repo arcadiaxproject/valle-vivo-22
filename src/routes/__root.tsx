@@ -80,13 +80,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Sotillo está vivo" },
+      { title: "Salvar el valle" },
       {
         name: "description",
         content: "Un proyecto para mantener vivo el Valle del Tiétar.",
       },
-      { name: "author", content: "Sotillo está vivo" },
-      { property: "og:title", content: "Sotillo está vivo" },
+      { name: "author", content: "Salvar el valle" },
+      { property: "og:title", content: "Salvar el valle" },
       {
         property: "og:description",
         content: "Un proyecto para mantener vivo el Valle del Tiétar.",

@@ -25,7 +25,7 @@ const ROLE_LABEL: Record<"cliente" | "comercio", string> = {
 };
 
 export const Route = createFileRoute("/cuenta")({
-  head: () => ({ meta: [{ title: "Mi cuenta — Sotillo está vivo" }] }),
+  head: () => ({ meta: [{ title: "Mi cuenta — Salvar el valle" }] }),
   component: CuentaPage,
 });
 

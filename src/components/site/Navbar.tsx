@@ -115,7 +115,7 @@ export function Navbar() {
             solid ? "text-primary" : "text-primary-foreground"
           }`}
         >
-          Sotillo está vivo
+          Salvar el valle
         </Link>
 
         <ul className="hidden items-center gap-7 lg:flex">

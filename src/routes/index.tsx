@@ -9,7 +9,7 @@ import { Ayudar } from "@/components/site/Ayudar";
 import { Pueblos } from "@/components/site/Pueblos";
 import { Footer } from "@/components/site/Footer";
 
-const title = "Sotillo está vivo — Descubre el Valle del Tiétar";
+const title = "Salvar el valle — Descubre el Valle del Tiétar";
 const description =
   "Negocios, pueblos y experiencias del Valle del Tiétar. Ven, descubre y consume local: el Valle sigue vivo.";
 

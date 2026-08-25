@@ -32,7 +32,7 @@ const categoriaDescripciones: Record<string, string> = {
 
 export const Route = createFileRoute("/categoria/$categoria")({
   head: ({ params }) => ({
-    meta: [{ title: `${params.categoria} — Sotillo está vivo` }],
+    meta: [{ title: `${params.categoria} — Salvar el valle` }],
   }),
   component: CategoriaPage,
 });

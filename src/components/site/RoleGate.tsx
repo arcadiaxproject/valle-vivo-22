@@ -15,7 +15,7 @@ export function RoleGate() {
         hideClose
       >
         <DialogHeader>
-          <DialogTitle>¿Cómo quieres usar Sotillo está vivo?</DialogTitle>
+          <DialogTitle>¿Cómo quieres usar Salvar el valle?</DialogTitle>
           <DialogDescription>
             Elige un perfil para continuar. Podrás cambiarlo más adelante desde tu cuenta.
           </DialogDescription>
