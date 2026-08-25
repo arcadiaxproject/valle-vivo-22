@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -7,6 +7,7 @@ import {
   Award,
   BadgeCheck,
   CalendarDays,
+  Camera,
   ExternalLink,
   Images,
   LogOut,
@@ -20,7 +21,7 @@ import {
   Video,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
-import { fetchMiNegocio, type Negocio } from "@/lib/negocios";
+import { fetchMiNegocio, subirArchivoNegocio, type Negocio } from "@/lib/negocios";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Footer";
 import { MiNegocioDialog } from "@/components/site/MiNegocioDialog";
@@ -56,6 +57,8 @@ function CuentaPage() {
   const [nombre, setNombre] = useState("");
   const [saving, setSaving] = useState(false);
   const [tab, setTab] = useState<Tab>("negocio");
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (profile) setNombre(profile.nombre);
@@ -103,12 +106,28 @@ function CuentaPage() {
     }
   }
 
+  async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file || !user) return;
+    setUploadingAvatar(true);
+    try {
+      const avatar_url = await subirArchivoNegocio(user.id, file);
+      await updateProfile({ avatar_url });
+      toast.success("Foto de perfil actualizada");
+    } catch {
+      toast.error("No se ha podido subir la foto");
+    } finally {
+      setUploadingAvatar(false);
+    }
+  }
+
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-stone pb-24">
-        <div className="border-b border-border bg-card pt-32 sm:pt-36">
-          <div className="container-page flex items-center justify-between gap-4 pb-6">
+      <main className="flex h-screen flex-col overflow-hidden bg-stone">
+        <div className="shrink-0 border-b border-border bg-card pt-24 sm:pt-28">
+          <div className="container-page flex items-center justify-between gap-4 pb-4">
             <Link
               to="/"
               className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground transition-opacity hover:opacity-70"
@@ -126,25 +145,46 @@ function CuentaPage() {
           </div>
         </div>
 
-        <div className="container-page mt-8 grid gap-8 lg:grid-cols-[272px_1fr]">
+        <div className="container-page grid min-h-0 flex-1 gap-6 py-5 lg:grid-cols-[260px_1fr]">
           {/* Sidebar de perfil, estilo GitHub */}
-          <aside className="h-fit space-y-5 lg:sticky lg:top-28">
-            <div className="rounded-2xl border border-border bg-card p-6 shadow-soft">
-              {profile?.avatar_url ? (
-                <img
-                  src={profile.avatar_url}
-                  alt={profile.nombre}
-                  width={96}
-                  height={96}
-                  className="size-24 rounded-full object-cover ring-4 ring-secondary"
+          <aside className="min-h-0 overflow-y-auto">
+            <div className="rounded-2xl border border-border bg-card p-5 shadow-soft">
+              <div className="group relative w-fit">
+                {profile?.avatar_url ? (
+                  <img
+                    src={profile.avatar_url}
+                    alt={profile.nombre}
+                    width={80}
+                    height={80}
+                    className="size-20 rounded-full object-cover ring-4 ring-secondary"
+                  />
+                ) : (
+                  <div className="flex size-20 items-center justify-center rounded-full bg-secondary ring-4 ring-secondary">
+                    <UserRound className="size-8 text-muted-foreground" />
+                  </div>
+                )}
+                <button
+                  type="button"
+                  onClick={() => avatarInputRef.current?.click()}
+                  disabled={uploadingAvatar}
+                  aria-label="Cambiar foto de perfil"
+                  className="absolute -bottom-1 -right-1 flex size-7 items-center justify-center rounded-full border-2 border-card bg-accent text-accent-foreground shadow-soft transition-transform hover:scale-105 disabled:opacity-60"
+                >
+                  <Camera className="size-3.5" />
+                </button>
+                <input
+                  ref={avatarInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => void handleAvatarChange(e)}
                 />
-              ) : (
-                <div className="flex size-24 items-center justify-center rounded-full bg-secondary ring-4 ring-secondary">
-                  <UserRound className="size-9 text-muted-foreground" />
-                </div>
+              </div>
+              {uploadingAvatar && (
+                <p className="mt-1.5 text-xs text-muted-foreground">Subiendo foto…</p>
               )}
 
-              <h1 className="mt-4 text-xl font-bold leading-tight">
+              <h1 className="mt-3 text-xl font-bold leading-tight">
                 {profile?.nombre ?? user.email}
               </h1>
               <p className="mt-0.5 truncate text-sm text-muted-foreground">{user.email}</p>
@@ -154,7 +194,7 @@ function CuentaPage() {
                 {profile?.role ? ROLE_LABEL[profile.role] : "Sin definir"}
               </span>
 
-              <dl className="mt-5 space-y-3 border-t border-border pt-5 text-sm">
+              <dl className="mt-4 space-y-2.5 border-t border-border pt-4 text-sm">
                 <div className="flex items-center justify-between gap-3">
                   <dt className="flex items-center gap-2 text-muted-foreground">
                     <Award className="size-4 text-terracotta" />
@@ -174,8 +214,8 @@ function CuentaPage() {
           </aside>
 
           {/* Contenido con pestañas */}
-          <div className="min-w-0">
-            <div className="flex gap-6 border-b border-border">
+          <div className="flex min-h-0 flex-col">
+            <div className="flex shrink-0 gap-6 border-b border-border">
               {esComercio && (
                 <button
                   onClick={() => setTab("negocio")}
@@ -202,16 +242,16 @@ function CuentaPage() {
               </button>
             </div>
 
-            <div className="mt-6">
+            <div className="mt-4 min-h-0 flex-1">
               {activeTab === "negocio" && esComercio && (
-                <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-soft">
+                <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-soft">
                   {miNegocio ? (
                     <PerfilNegocioEmpresa
                       negocio={miNegocio}
                       verificado={Boolean(profile?.distintivo)}
                     />
                   ) : (
-                    <div className="flex flex-col items-center gap-4 px-6 py-16 text-center">
+                    <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 py-10 text-center">
                       <div className="flex size-14 shrink-0 items-center justify-center rounded-full bg-secondary">
                         <Store className="size-6 text-forest" />
                       </div>
@@ -236,7 +276,7 @@ function CuentaPage() {
               )}
 
               {activeTab === "cuenta" && (
-                <div className="max-w-sm rounded-2xl border border-border bg-card p-6 shadow-soft">
+                <div className="h-full max-w-sm overflow-y-auto rounded-2xl border border-border bg-card p-6 shadow-soft">
                   <h2 className="text-lg font-bold">Editar datos</h2>
                   <form onSubmit={handleSubmit} className="mt-4 grid gap-4">
                     <div className="grid gap-2">
@@ -287,9 +327,9 @@ function PerfilNegocioEmpresa({ negocio, verificado }: { negocio: Negocio; verif
   });
 
   return (
-    <div>
+    <div className="flex h-full min-h-0 flex-col">
       {/* Cabecera de empresa */}
-      <div className="flex flex-wrap items-start justify-between gap-4 border-b border-border bg-gradient-to-br from-secondary/50 to-transparent px-6 py-6">
+      <div className="flex shrink-0 flex-wrap items-start justify-between gap-4 border-b border-border bg-gradient-to-br from-secondary/50 to-transparent px-5 py-4">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
             <span
@@ -345,12 +385,12 @@ function PerfilNegocioEmpresa({ negocio, verificado }: { negocio: Negocio; verif
         </div>
       </div>
 
-      <div className="p-6">
+      <div className="min-h-0 flex-1 overflow-y-auto p-5">
         {/* Galería estilo Airbnb: una foto grande + hasta 4 pequeñas */}
         {hero.length > 0 ? (
           <div
             className="grid grid-cols-4 grid-rows-2 gap-1.5 overflow-hidden rounded-xl"
-            style={{ aspectRatio: "16 / 8" }}
+            style={{ aspectRatio: "16 / 5" }}
           >
             <img src={hero[0]} alt="" className="col-span-2 row-span-2 size-full object-cover" />
             {hero.slice(1).map((url) => (
@@ -382,8 +422,8 @@ function PerfilNegocioEmpresa({ negocio, verificado }: { negocio: Negocio; verif
           </div>
         )}
 
-        <div className="mt-7 grid gap-8 border-t border-border pt-7 lg:grid-cols-[1fr_17rem]">
-          <div className="min-w-0 space-y-6">
+        <div className="mt-5 grid gap-6 border-t border-border pt-5 lg:grid-cols-[1fr_17rem]">
+          <div className="min-w-0 space-y-4">
             <div>
               <h3 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
                 Descripción
@@ -433,7 +473,7 @@ function PerfilNegocioEmpresa({ negocio, verificado }: { negocio: Negocio; verif
             )}
           </div>
 
-          <aside className="h-fit space-y-5 rounded-xl border border-border p-5">
+          <aside className="h-fit space-y-4 rounded-xl border border-border p-4">
             <div>
               <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
                 <Images className="size-3.5" />

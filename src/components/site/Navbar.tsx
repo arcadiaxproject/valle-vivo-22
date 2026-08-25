@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Menu, X } from "lucide-react";
+import { Menu, UserRound, X } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 
 const links = [
@@ -70,14 +70,24 @@ function AuthControls({ solid }: { solid: boolean }) {
       className="flex items-center gap-3 rounded-lg transition-opacity hover:opacity-70"
       aria-label="Ver mi cuenta"
     >
-      {profile?.avatar_url && (
+      {profile?.avatar_url ? (
         <img
           src={profile.avatar_url}
           alt={profile.nombre}
           width={32}
           height={32}
-          className="size-8 rounded-full object-cover"
+          className={`size-8 rounded-full object-cover ring-2 ${solid ? "ring-secondary" : "ring-primary-foreground/40"}`}
         />
+      ) : (
+        <div
+          className={`flex size-8 items-center justify-center rounded-full ring-2 ${
+            solid
+              ? "bg-secondary ring-secondary text-muted-foreground"
+              : "bg-primary-foreground/15 ring-primary-foreground/40 text-primary-foreground"
+          }`}
+        >
+          <UserRound className="size-4" />
+        </div>
       )}
       <span
         className={`text-sm font-semibold ${solid ? "text-foreground" : "text-primary-foreground"}`}

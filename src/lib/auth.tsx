@@ -23,7 +23,7 @@ type AuthContextValue = {
   signInWithGoogle: (intent: "login" | "register") => Promise<void>;
   signOut: () => Promise<void>;
   setRole: (role: "cliente" | "comercio") => Promise<void>;
-  updateProfile: (updates: Partial<Pick<Profile, "nombre">>) => Promise<void>;
+  updateProfile: (updates: Partial<Pick<Profile, "nombre" | "avatar_url">>) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -96,7 +96,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await supabase.auth.signOut();
   }
 
-  async function updateProfile(updates: Partial<Pick<Profile, "nombre">>) {
+  async function updateProfile(updates: Partial<Pick<Profile, "nombre" | "avatar_url">>) {
     if (!session?.user) return;
     const { data, error } = await supabase
       .from("profiles")
