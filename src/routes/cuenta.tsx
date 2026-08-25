@@ -5,11 +5,19 @@ import { toast } from "sonner";
 import {
   ArrowLeft,
   Award,
+  BadgeCheck,
   CalendarDays,
+  ExternalLink,
   Images,
   LogOut,
+  MapPin,
+  Music,
+  Pencil,
+  PlusCircle,
   Store,
+  Tag,
   UserRound,
+  Video,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { fetchMiNegocio, type Negocio } from "@/lib/negocios";
@@ -22,6 +30,16 @@ import { Label } from "@/components/ui/label";
 const ROLE_LABEL: Record<"cliente" | "comercio", string> = {
   cliente: "Visitante",
   comercio: "Negocio",
+};
+
+// Mismo acento por categoría que en el listado del Valle.
+const CATEGORIA_ACENTOS: Record<string, string> = {
+  Pueblos: "#c1502e",
+  Naturaleza: "#4c6a3f",
+  Comer: "#c1502e",
+  Dormir: "#b9902e",
+  "Qué hacer": "#4c6a3f",
+  "Comercio local": "#b9902e",
 };
 
 export const Route = createFileRoute("/cuenta")({
@@ -188,25 +206,27 @@ function CuentaPage() {
               {activeTab === "negocio" && esComercio && (
                 <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-soft">
                   {miNegocio ? (
-                    <PerfilNegocioAirbnb negocio={miNegocio} />
+                    <PerfilNegocioEmpresa
+                      negocio={miNegocio}
+                      verificado={Boolean(profile?.distintivo)}
+                    />
                   ) : (
-                    <div className="p-6">
-                      <div className="flex items-start gap-4">
-                        <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-secondary">
-                          <Store className="size-5 text-forest" />
-                        </div>
-                        <div>
-                          <h2 className="text-lg font-bold">
-                            Todavía no has dado de alta tu negocio
-                          </h2>
-                          <p className="mt-1 text-sm text-muted-foreground">
-                            Añade tu ficha para aparecer en el listado de negocios y en el mapa del
-                            Valle.
-                          </p>
-                        </div>
+                    <div className="flex flex-col items-center gap-4 px-6 py-16 text-center">
+                      <div className="flex size-14 shrink-0 items-center justify-center rounded-full bg-secondary">
+                        <Store className="size-6 text-forest" />
+                      </div>
+                      <div className="max-w-sm">
+                        <h2 className="text-lg font-bold">
+                          Todavía no has dado de alta tu negocio
+                        </h2>
+                        <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                          Crea tu ficha de empresa para aparecer en el listado de negocios y en el
+                          mapa del Valle.
+                        </p>
                       </div>
                       <MiNegocioDialog>
-                        <button className="mt-4 rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90">
+                        <button className="mt-1 inline-flex items-center gap-2 rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90">
+                          <PlusCircle className="size-4" />
                           Añadir mi negocio
                         </button>
                       </MiNegocioDialog>
@@ -254,120 +274,203 @@ function CuentaPage() {
   );
 }
 
-function PerfilNegocioAirbnb({ negocio }: { negocio: Negocio }) {
+function PerfilNegocioEmpresa({ negocio, verificado }: { negocio: Negocio; verificado: boolean }) {
   const galeria = [negocio.imagen, ...negocio.fotos].filter((u): u is string => Boolean(u));
   const hero = galeria.slice(0, 5);
-  const extra = galeria.slice(5);
+  const extra = galeria.slice(5, 9);
+  const restantes = galeria.length - hero.length - extra.length;
+  const acento = CATEGORIA_ACENTOS[negocio.categoria] ?? "#c1502e";
+  const creadoEl = new Date(negocio.created_at).toLocaleDateString("es-ES", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
 
   return (
-    <div className="p-6">
-      <div className="flex flex-wrap items-start justify-between gap-4">
+    <div>
+      {/* Cabecera de empresa */}
+      <div className="flex flex-wrap items-start justify-between gap-4 border-b border-border bg-gradient-to-br from-secondary/50 to-transparent px-6 py-6">
         <div className="min-w-0">
-          <h2 className="text-2xl font-semibold">{negocio.nombre}</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {negocio.categoria} · {negocio.municipio}
-            {negocio.abierto !== null && (
-              <>
-                {" · "}
-                <span className={negocio.abierto ? "text-forest" : "text-earth"}>
-                  {negocio.abierto ? "Abierto ahora" : "Cerrado"}
-                </span>
-              </>
+          <div className="flex flex-wrap items-center gap-2">
+            <span
+              className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-[0.7rem] font-bold uppercase tracking-widest"
+              style={{ color: acento, borderColor: `${acento}55`, backgroundColor: `${acento}14` }}
+            >
+              {negocio.categoria}
+            </span>
+            {verificado && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-forest/10 px-2.5 py-0.5 text-[0.7rem] font-bold uppercase tracking-widest text-forest">
+                <BadgeCheck className="size-3.5" />
+                Verificado
+              </span>
             )}
-          </p>
-        </div>
-        <MiNegocioDialog>
-          <button className="shrink-0 rounded-lg border border-border px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-secondary">
-            Editar
-          </button>
-        </MiNegocioDialog>
-      </div>
-
-      {/* Galería estilo Airbnb: una foto grande + hasta 4 pequeñas */}
-      {hero.length > 0 ? (
-        <div
-          className="mt-5 grid grid-cols-4 grid-rows-2 gap-1.5 overflow-hidden rounded-xl"
-          style={{ aspectRatio: "16 / 8" }}
-        >
-          <img src={hero[0]} alt="" className="col-span-2 row-span-2 size-full object-cover" />
-          {hero.slice(1).map((url) => (
-            <img key={url} src={url} alt="" className="size-full object-cover" />
-          ))}
-        </div>
-      ) : (
-        <div className="mt-5 flex h-48 items-center justify-center rounded-xl bg-secondary">
-          <Store className="size-8 text-muted-foreground" />
-        </div>
-      )}
-
-      {extra.length > 0 && (
-        <div className="mt-2 grid grid-cols-4 gap-1.5 sm:grid-cols-6">
-          {extra.map((url) => (
-            <img
-              key={url}
-              src={url}
-              alt=""
-              className="aspect-square w-full rounded-lg object-cover"
-            />
-          ))}
-        </div>
-      )}
-
-      <div className="mt-6 grid gap-8 border-t border-border pt-6 lg:grid-cols-[1fr_16rem]">
-        <div className="min-w-0 space-y-6">
-          <div>
-            <h3 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
-              Descripción
-            </h3>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              {negocio.descripcion}
-            </p>
+            {negocio.abierto !== null && (
+              <span
+                className={`inline-flex items-center gap-1.5 text-xs font-semibold ${negocio.abierto ? "text-forest" : "text-earth"}`}
+              >
+                <span
+                  className={`size-1.5 rounded-full ${negocio.abierto ? "bg-forest" : "bg-earth"}`}
+                  aria-hidden="true"
+                />
+                {negocio.abierto ? "Abierto ahora" : "Cerrado"}
+              </span>
+            )}
           </div>
 
-          {negocio.video_url && (
-            <div>
-              <h3 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
-                Vídeo
-              </h3>
-              <video src={negocio.video_url} controls className="mt-2 w-full rounded-lg" />
-            </div>
-          )}
+          <h2 className="mt-2.5 truncate text-2xl font-bold leading-tight">{negocio.nombre}</h2>
 
-          {negocio.audio_url && (
-            <div>
-              <h3 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
-                Audio
-              </h3>
-              <audio src={negocio.audio_url} controls className="mt-2 w-full" />
-            </div>
-          )}
+          <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5">
+              <MapPin className="size-3.5 shrink-0" />
+              {negocio.direccion ? `${negocio.direccion}, ${negocio.municipio}` : negocio.municipio}
+            </span>
+          </div>
         </div>
 
-        <aside className="h-fit rounded-xl border border-border p-5">
-          <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-            <Images className="size-3.5" />
-            Ficha
-          </p>
-          <dl className="mt-3 space-y-2.5 text-sm">
-            <div className="flex justify-between gap-3">
-              <dt className="text-muted-foreground">Categoría</dt>
-              <dd className="font-semibold">{negocio.categoria}</dd>
-            </div>
-            <div className="flex justify-between gap-3">
-              <dt className="text-muted-foreground">Municipio</dt>
-              <dd className="font-semibold">{negocio.municipio}</dd>
-            </div>
-            <div className="flex justify-between gap-3">
-              <dt className="text-muted-foreground">Fotos</dt>
-              <dd className="font-semibold">{galeria.length}</dd>
-            </div>
-          </dl>
+        <div className="flex shrink-0 items-center gap-2.5">
+          <Link
+            to="/negocio/$id"
+            params={{ id: negocio.id }}
+            className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-secondary"
+          >
+            <ExternalLink className="size-4" />
+            Ver ficha pública
+          </Link>
           <MiNegocioDialog>
-            <button className="mt-4 w-full rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90">
-              Editar mi negocio
+            <button className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90">
+              <Pencil className="size-4" />
+              Editar
             </button>
           </MiNegocioDialog>
-        </aside>
+        </div>
+      </div>
+
+      <div className="p-6">
+        {/* Galería estilo Airbnb: una foto grande + hasta 4 pequeñas */}
+        {hero.length > 0 ? (
+          <div
+            className="grid grid-cols-4 grid-rows-2 gap-1.5 overflow-hidden rounded-xl"
+            style={{ aspectRatio: "16 / 8" }}
+          >
+            <img src={hero[0]} alt="" className="col-span-2 row-span-2 size-full object-cover" />
+            {hero.slice(1).map((url) => (
+              <img key={url} src={url} alt="" className="size-full object-cover" />
+            ))}
+          </div>
+        ) : (
+          <div className="flex h-48 flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border bg-secondary/40 text-muted-foreground">
+            <Store className="size-8" />
+            <p className="text-sm">Todavía no has subido fotos</p>
+          </div>
+        )}
+
+        {extra.length > 0 && (
+          <div className="mt-2 grid grid-cols-4 gap-1.5 sm:grid-cols-6">
+            {extra.map((url, i) => {
+              const esUltima = i === extra.length - 1 && restantes > 0;
+              return (
+                <div key={url} className="relative aspect-square w-full overflow-hidden rounded-lg">
+                  <img src={url} alt="" className="size-full object-cover" />
+                  {esUltima && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/55 text-sm font-semibold text-white">
+                      +{restantes}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        <div className="mt-7 grid gap-8 border-t border-border pt-7 lg:grid-cols-[1fr_17rem]">
+          <div className="min-w-0 space-y-6">
+            <div>
+              <h3 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+                Descripción
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                {negocio.descripcion}
+              </p>
+            </div>
+
+            {negocio.badges.length > 0 && (
+              <div>
+                <h3 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+                  Distintivos
+                </h3>
+                <div className="mt-2.5 flex flex-wrap gap-2">
+                  {negocio.badges.map((b) => (
+                    <span
+                      key={b}
+                      className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground"
+                    >
+                      <Tag className="size-3.5 text-terracotta" />
+                      {b}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {negocio.video_url && (
+              <div>
+                <h3 className="flex items-center gap-1.5 text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+                  <Video className="size-3.5" />
+                  Vídeo
+                </h3>
+                <video src={negocio.video_url} controls className="mt-2 w-full rounded-lg" />
+              </div>
+            )}
+
+            {negocio.audio_url && (
+              <div>
+                <h3 className="flex items-center gap-1.5 text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+                  <Music className="size-3.5" />
+                  Audio
+                </h3>
+                <audio src={negocio.audio_url} controls className="mt-2 w-full" />
+              </div>
+            )}
+          </div>
+
+          <aside className="h-fit space-y-5 rounded-xl border border-border p-5">
+            <div>
+              <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                <Images className="size-3.5" />
+                Ficha de empresa
+              </p>
+              <dl className="mt-3 space-y-2.5 text-sm">
+                <div className="flex justify-between gap-3">
+                  <dt className="text-muted-foreground">Categoría</dt>
+                  <dd className="font-semibold">{negocio.categoria}</dd>
+                </div>
+                <div className="flex justify-between gap-3">
+                  <dt className="text-muted-foreground">Municipio</dt>
+                  <dd className="font-semibold">{negocio.municipio}</dd>
+                </div>
+                {negocio.direccion && (
+                  <div className="flex justify-between gap-3">
+                    <dt className="text-muted-foreground">Dirección</dt>
+                    <dd className="text-right font-semibold">{negocio.direccion}</dd>
+                  </div>
+                )}
+                <div className="flex justify-between gap-3">
+                  <dt className="text-muted-foreground">Fotos</dt>
+                  <dd className="font-semibold">{galeria.length}</dd>
+                </div>
+                <div className="flex justify-between gap-3">
+                  <dt className="text-muted-foreground">Publicado</dt>
+                  <dd className="font-semibold">{creadoEl}</dd>
+                </div>
+              </dl>
+            </div>
+            <MiNegocioDialog>
+              <button className="w-full rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90">
+                Editar mi negocio
+              </button>
+            </MiNegocioDialog>
+          </aside>
+        </div>
       </div>
     </div>
   );
