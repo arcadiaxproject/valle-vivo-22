@@ -5,6 +5,7 @@ import { MapPin, Trash2 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import {
   CATEGORIAS_NEGOCIO,
+  MUNICIPIOS_DISPONIBLES,
   fetchMiNegocio,
   guardarMiNegocio,
   subirArchivoNegocio,
@@ -54,6 +55,13 @@ export function MiNegocioDialog({ children }: { children: ReactNode }) {
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [ubicacion, setUbicacion] = useState<Ubicacion | null>(null);
+  const [horario, setHorario] = useState("");
+  const [telefono, setTelefono] = useState("");
+  const [email, setEmail] = useState("");
+  const [web, setWeb] = useState("");
+  const [instagram, setInstagram] = useState("");
+  const [facebook, setFacebook] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
 
   const [uploadingPortada, setUploadingPortada] = useState(false);
   const [uploadingFotos, setUploadingFotos] = useState(false);
@@ -74,6 +82,13 @@ export function MiNegocioDialog({ children }: { children: ReactNode }) {
     setFotos(negocio.fotos);
     setVideoUrl(negocio.video_url);
     setAudioUrl(negocio.audio_url);
+    setHorario(negocio.horario ?? "");
+    setTelefono(negocio.telefono ?? "");
+    setEmail(negocio.email ?? "");
+    setWeb(negocio.web ?? "");
+    setInstagram(negocio.instagram ?? "");
+    setFacebook(negocio.facebook ?? "");
+    setWhatsapp(negocio.whatsapp ?? "");
     if (negocio.lat != null && negocio.lng != null) {
       const u = { direccion: negocio.direccion ?? "", lat: negocio.lat, lng: negocio.lng };
       setUbicacion(u);
@@ -107,11 +122,6 @@ export function MiNegocioDialog({ children }: { children: ReactNode }) {
             lat: loc.lat(),
             lng: loc.lng(),
           });
-
-          const municipioComponent = place.address_components?.find(
-            (c) => c.types.includes("locality") || c.types.includes("administrative_area_level_3"),
-          );
-          if (municipioComponent) setMunicipio(municipioComponent.long_name);
         });
       })
       .catch(() => {
@@ -199,6 +209,13 @@ export function MiNegocioDialog({ children }: { children: ReactNode }) {
         direccion: ubicacion?.direccion ?? direccionInputRef.current?.value ?? null,
         lat: ubicacion?.lat ?? null,
         lng: ubicacion?.lng ?? null,
+        horario: horario || null,
+        telefono: telefono || null,
+        email: email || null,
+        web: web || null,
+        instagram: instagram || null,
+        facebook: facebook || null,
+        whatsapp: whatsapp || null,
       });
       await queryClient.invalidateQueries({ queryKey: ["mi-negocio", user.id] });
       await queryClient.invalidateQueries({ queryKey: ["negocios"] });
@@ -250,7 +267,10 @@ export function MiNegocioDialog({ children }: { children: ReactNode }) {
             {fotos.length > 0 && (
               <div className="grid grid-cols-4 gap-2">
                 {fotos.map((url) => (
-                  <div key={url} className="group relative aspect-square overflow-hidden rounded-lg">
+                  <div
+                    key={url}
+                    className="group relative aspect-square overflow-hidden rounded-lg"
+                  >
                     <img src={url} alt="" className="size-full object-cover" />
                     <button
                       type="button"
@@ -280,9 +300,7 @@ export function MiNegocioDialog({ children }: { children: ReactNode }) {
 
           <div className="grid gap-2">
             <Label htmlFor="video">Vídeo (opcional)</Label>
-            {videoUrl && (
-              <video src={videoUrl} controls className="w-full rounded-lg" />
-            )}
+            {videoUrl && <video src={videoUrl} controls className="w-full rounded-lg" />}
             <div className="flex gap-2">
               <Input
                 id="video"
@@ -336,7 +354,12 @@ export function MiNegocioDialog({ children }: { children: ReactNode }) {
 
           <div className="grid gap-2">
             <Label htmlFor="nombre">Nombre del local</Label>
-            <Input id="nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
+            <Input
+              id="nombre"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              required
+            />
           </div>
 
           <div className="grid gap-2">
@@ -372,13 +395,22 @@ export function MiNegocioDialog({ children }: { children: ReactNode }) {
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="municipio">Municipio</Label>
-            <Input
-              id="municipio"
-              value={municipio}
-              onChange={(e) => setMunicipio(e.target.value)}
-              required
-            />
+            <Label>Municipio</Label>
+            <Select value={municipio} onValueChange={setMunicipio} required>
+              <SelectTrigger>
+                <SelectValue placeholder="Elige un municipio" />
+              </SelectTrigger>
+              <SelectContent>
+                {MUNICIPIOS_DISPONIBLES.map((m) => (
+                  <SelectItem key={m} value={m}>
+                    {m}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">
+              De momento solo se pueden dar de alta negocios de estos dos municipios.
+            </p>
           </div>
 
           <div className="grid gap-2">
@@ -397,6 +429,78 @@ export function MiNegocioDialog({ children }: { children: ReactNode }) {
               Abierto ahora
             </Label>
             <Switch id="abierto" checked={abierto} onCheckedChange={setAbierto} />
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="horario">Horario</Label>
+            <Input
+              id="horario"
+              placeholder="Lunes - Domingo, 09:00 - 21:00"
+              value={horario}
+              onChange={(e) => setHorario(e.target.value)}
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="telefono">Teléfono</Label>
+              <Input
+                id="telefono"
+                type="tel"
+                value={telefono}
+                onChange={(e) => setTelefono(e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="whatsapp">WhatsApp</Label>
+              <Input
+                id="whatsapp"
+                type="tel"
+                value={whatsapp}
+                onChange={(e) => setWhatsapp(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="email-negocio">Email de contacto</Label>
+            <Input
+              id="email-negocio"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="web">Sitio web</Label>
+            <Input
+              id="web"
+              placeholder="https://…"
+              value={web}
+              onChange={(e) => setWeb(e.target.value)}
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="instagram">Instagram</Label>
+              <Input
+                id="instagram"
+                placeholder="@usuario"
+                value={instagram}
+                onChange={(e) => setInstagram(e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="facebook">Facebook</Label>
+              <Input
+                id="facebook"
+                placeholder="Nombre de la página"
+                value={facebook}
+                onChange={(e) => setFacebook(e.target.value)}
+              />
+            </div>
           </div>
 
           <button

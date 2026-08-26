@@ -1,8 +1,10 @@
 import { lazy, Suspense } from "react";
 import { createFileRoute, Link, ClientOnly } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, MapPin } from "lucide-react";
-import { fetchNegocioPorId } from "@/lib/negocios";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { ArrowLeft, Heart, MapPin } from "lucide-react";
+import { esFavorito, fetchNegocioPorId, marcarFavorito, quitarFavorito } from "@/lib/negocios";
+import { useAuth } from "@/lib/auth";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Footer";
 
@@ -14,11 +16,41 @@ export const Route = createFileRoute("/negocio/$id")({
 
 function NegocioPage() {
   const { id } = Route.useParams();
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
 
-  const { data: negocio, isPending, isError } = useQuery({
+  const {
+    data: negocio,
+    isPending,
+    isError,
+  } = useQuery({
     queryKey: ["negocio", id],
     queryFn: () => fetchNegocioPorId(id),
   });
+
+  const { data: favorito } = useQuery({
+    queryKey: ["favorito", id, user?.id],
+    queryFn: () => esFavorito(user!.id, id),
+    enabled: Boolean(user),
+  });
+
+  async function toggleFavorito() {
+    if (!user) {
+      toast.error("Inicia sesión para guardar favoritos");
+      return;
+    }
+    try {
+      if (favorito) {
+        await quitarFavorito(user.id, id);
+      } else {
+        await marcarFavorito(user.id, id);
+      }
+      await queryClient.invalidateQueries({ queryKey: ["favorito", id, user.id] });
+      await queryClient.invalidateQueries({ queryKey: ["mis-favoritos", user.id] });
+    } catch {
+      toast.error("No se ha podido actualizar tu favorito");
+    }
+  }
 
   return (
     <>
@@ -65,16 +97,26 @@ function NegocioPage() {
               )}
 
               {negocio.video_url && (
-                <video
-                  src={negocio.video_url}
-                  controls
-                  className="mt-4 w-full rounded-2xl"
-                />
+                <video src={negocio.video_url} controls className="mt-4 w-full rounded-2xl" />
               )}
 
-              <p className="eyebrow mt-8 text-terracotta">
-                {negocio.categoria} · {negocio.municipio}
-              </p>
+              <div className="mt-8 flex items-start justify-between gap-4">
+                <p className="eyebrow text-terracotta">
+                  {negocio.categoria} · {negocio.municipio}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => void toggleFavorito()}
+                  aria-pressed={Boolean(favorito)}
+                  aria-label={favorito ? "Quitar de favoritos" : "Guardar como favorito"}
+                  className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-semibold transition-colors hover:bg-secondary"
+                >
+                  <Heart
+                    className={`size-4 ${favorito ? "fill-terracotta text-terracotta" : ""}`}
+                  />
+                  {favorito ? "En favoritos" : "Guardar"}
+                </button>
+              </div>
               <h1 className="mt-3 text-4xl font-semibold leading-[1.03] sm:text-5xl">
                 {negocio.nombre}
               </h1>

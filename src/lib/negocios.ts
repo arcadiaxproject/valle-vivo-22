@@ -3,6 +3,7 @@ import type { Database } from "./database.types";
 
 export type Negocio = Database["public"]["Tables"]["negocios"]["Row"];
 export type NegocioInput = Database["public"]["Tables"]["negocios"]["Insert"];
+export type Favorito = Database["public"]["Tables"]["favoritos"]["Row"];
 
 export const CATEGORIAS_NEGOCIO = [
   "Comer",
@@ -12,6 +13,9 @@ export const CATEGORIAS_NEGOCIO = [
   "Naturaleza",
   "Pueblos",
 ] as const;
+
+// De momento solo se pueden dar de alta negocios de estos dos municipios.
+export const MUNICIPIOS_DISPONIBLES = ["Sotillo de la Adrada", "La Adrada"] as const;
 
 export async function fetchNegocios(): Promise<Negocio[]> {
   const { data, error } = await supabase.from("negocios").select("*");
@@ -53,4 +57,52 @@ export async function subirArchivoNegocio(ownerId: string, file: File): Promise<
   });
   if (error) throw error;
   return supabase.storage.from("negocios").getPublicUrl(path).data.publicUrl;
+}
+
+export async function fetchMisFavoritos(
+  userId: string,
+): Promise<(Favorito & { negocio: Negocio })[]> {
+  const { data, error } = await supabase
+    .from("favoritos")
+    .select("*, negocio:negocios(*)")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return data as unknown as (Favorito & { negocio: Negocio })[];
+}
+
+export async function esFavorito(userId: string, negocioId: string): Promise<boolean> {
+  const { data, error } = await supabase
+    .from("favoritos")
+    .select("id")
+    .eq("user_id", userId)
+    .eq("negocio_id", negocioId)
+    .maybeSingle();
+  if (error) throw error;
+  return Boolean(data);
+}
+
+export async function marcarFavorito(userId: string, negocioId: string): Promise<void> {
+  const { error } = await supabase
+    .from("favoritos")
+    .insert({ user_id: userId, negocio_id: negocioId });
+  if (error) throw error;
+}
+
+export async function quitarFavorito(userId: string, negocioId: string): Promise<void> {
+  const { error } = await supabase
+    .from("favoritos")
+    .delete()
+    .eq("user_id", userId)
+    .eq("negocio_id", negocioId);
+  if (error) throw error;
+}
+
+export async function contarFavoritosDeNegocio(negocioId: string): Promise<number> {
+  const { count, error } = await supabase
+    .from("favoritos")
+    .select("id", { count: "exact", head: true })
+    .eq("negocio_id", negocioId);
+  if (error) throw error;
+  return count ?? 0;
 }

@@ -18,6 +18,13 @@ export type Database = {
           fotos: string[];
           video_url: string | null;
           audio_url: string | null;
+          telefono: string | null;
+          email: string | null;
+          web: string | null;
+          instagram: string | null;
+          facebook: string | null;
+          whatsapp: string | null;
+          horario: string | null;
           created_at: string;
         };
         Insert: {
@@ -36,6 +43,13 @@ export type Database = {
           fotos?: string[];
           video_url?: string | null;
           audio_url?: string | null;
+          telefono?: string | null;
+          email?: string | null;
+          web?: string | null;
+          instagram?: string | null;
+          facebook?: string | null;
+          whatsapp?: string | null;
+          horario?: string | null;
           created_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["negocios"]["Insert"]>;
@@ -70,6 +84,7 @@ export type Database = {
           avatar_url: string | null;
           role: "cliente" | "comercio" | null;
           distintivo: boolean;
+          municipio: string | null;
           created_at: string;
         };
         Insert: {
@@ -78,9 +93,25 @@ export type Database = {
           avatar_url?: string | null;
           role?: "cliente" | "comercio" | null;
           distintivo?: boolean;
+          municipio?: string | null;
           created_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["profiles"]["Insert"]>;
+      };
+      favoritos: {
+        Row: {
+          id: string;
+          user_id: string;
+          negocio_id: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          negocio_id: string;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["favoritos"]["Insert"]>;
       };
     };
   };
