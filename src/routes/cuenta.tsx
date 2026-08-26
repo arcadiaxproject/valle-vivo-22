@@ -125,11 +125,7 @@ function CuentaPage() {
 
         <div className="container-page pb-24 pt-10 sm:pt-16">
           <div className="mx-auto max-w-4xl">
-            {profile.role === "comercio" ? (
-              <PerfilEmpresa userId={user.id} verificado={profile.distintivo} />
-            ) : (
-              <PerfilUsuario />
-            )}
+            {profile.role === "comercio" ? <PerfilEmpresa userId={user.id} /> : <PerfilUsuario />}
           </div>
         </div>
       </main>
@@ -440,7 +436,7 @@ function PerfilUsuario() {
 
 type TabEmpresa = "informacion" | "fotos" | "estadisticas";
 
-function PerfilEmpresa({ userId, verificado }: { userId: string; verificado: boolean }) {
+function PerfilEmpresa({ userId }: { userId: string }) {
   const [tab, setTab] = useState<TabEmpresa>("informacion");
   const lightbox = useLightbox();
 
@@ -511,7 +507,7 @@ function PerfilEmpresa({ userId, verificado }: { userId: string; verificado: boo
             <h1 className="truncate font-serif text-xl font-semibold leading-tight">
               {negocio.nombre}
             </h1>
-            {verificado && (
+            {negocio.aprobado && (
               <span className="mt-1 inline-flex items-center gap-1 rounded-full border border-forest/40 bg-forest/10 px-2.5 py-0.5 text-[0.7rem] font-bold uppercase tracking-widest text-forest">
                 <BadgeCheck className="size-3.5" />
                 Negocio verificado

@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { BadgeCheck } from "lucide-react";
 import type { Negocio } from "@/lib/negocios";
 import { Reveal } from "./Reveal";
 
@@ -44,8 +45,14 @@ export function NegocioCard({
             className="h-56 w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.04]"
           />
 
-          {(tieneHistoria || n.badges.length > 0) && (
+          {(n.aprobado || tieneHistoria || n.badges.length > 0) && (
             <div className="absolute left-4 top-4 flex flex-wrap gap-2">
+              {n.aprobado && (
+                <span className="flex items-center gap-1 rounded-full border border-white/10 bg-black/55 px-3 py-1 text-[0.7rem] font-semibold uppercase tracking-wide text-primary-foreground backdrop-blur-md">
+                  <BadgeCheck className="size-3.5" />
+                  Verificado
+                </span>
+              )}
               {tieneHistoria && (
                 <span className="flex items-center gap-1.5 rounded-full border border-white/10 bg-black/55 px-3 py-1 text-[0.7rem] font-semibold uppercase tracking-wide text-primary-foreground backdrop-blur-md">
                   <span className="size-1.5 rounded-full bg-terracotta" aria-hidden="true" />

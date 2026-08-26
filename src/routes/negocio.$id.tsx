@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
   ArrowLeft,
+  BadgeCheck,
   Clock,
   Facebook,
   Globe,
@@ -167,6 +168,12 @@ function NegocioPage() {
                   </h1>
 
                   <div className="mt-3 flex flex-wrap items-center gap-2">
+                    {negocio.aprobado && (
+                      <span className="inline-flex items-center gap-1 rounded-full border border-forest/40 bg-forest/10 px-2.5 py-0.5 text-[0.7rem] font-bold uppercase tracking-widest text-forest">
+                        <BadgeCheck className="size-3.5" />
+                        Verificado
+                      </span>
+                    )}
                     {negocio.badges.map((b) => (
                       <span
                         key={b}
