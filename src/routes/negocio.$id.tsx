@@ -19,6 +19,7 @@ import { esFavorito, fetchNegocioPorId, marcarFavorito, quitarFavorito } from "@
 import { useAuth } from "@/lib/auth";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Footer";
+import { Ampliable, Lightbox, useLightbox } from "@/components/site/Lightbox";
 
 const MapaLeaflet = lazy(() => import("@/components/site/MapaLeaflet"));
 
@@ -63,6 +64,11 @@ function NegocioPage() {
       toast.error("No se ha podido actualizar tu favorito");
     }
   }
+
+  const lightbox = useLightbox();
+  const galeria = negocio
+    ? [negocio.imagen, ...negocio.fotos].filter((u): u is string => Boolean(u))
+    : [];
 
   const tieneContacto =
     negocio &&
@@ -124,13 +130,15 @@ function NegocioPage() {
             {negocio && (
               <div className="animate-in fade-in slide-in-from-bottom-2 overflow-hidden rounded-2xl border border-border bg-card shadow-lift duration-700">
                 {negocio.imagen && (
-                  <img
-                    src={negocio.imagen}
-                    alt={negocio.nombre}
-                    width={1200}
-                    height={800}
-                    className="h-72 w-full object-cover sm:h-96"
-                  />
+                  <Ampliable index={0} onClick={lightbox.open}>
+                    <img
+                      src={negocio.imagen}
+                      alt={negocio.nombre}
+                      width={1200}
+                      height={800}
+                      className="h-72 w-full object-cover transition-opacity hover:opacity-90 sm:h-96"
+                    />
+                  </Ampliable>
                 )}
 
                 {negocio.video_url && <video src={negocio.video_url} controls className="w-full" />}
@@ -194,16 +202,21 @@ function NegocioPage() {
                       Fotos
                     </h2>
                     <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
-                      {negocio.fotos.map((url) => (
-                        <img
+                      {negocio.fotos.map((url, i) => (
+                        <Ampliable
                           key={url}
-                          src={url}
-                          alt={negocio.nombre}
-                          width={600}
-                          height={450}
-                          loading="lazy"
-                          className="aspect-[4/3] w-full rounded-xl object-cover"
-                        />
+                          index={negocio.imagen ? i + 1 : i}
+                          onClick={lightbox.open}
+                        >
+                          <img
+                            src={url}
+                            alt={negocio.nombre}
+                            width={600}
+                            height={450}
+                            loading="lazy"
+                            className="aspect-[4/3] w-full rounded-xl object-cover transition-opacity hover:opacity-90"
+                          />
+                        </Ampliable>
                       ))}
                     </div>
                   </div>
@@ -321,6 +334,16 @@ function NegocioPage() {
           </div>
         </div>
       </main>
+
+      {negocio && (
+        <Lightbox
+          imagenes={galeria}
+          alt={negocio.nombre}
+          index={lightbox.index}
+          onIndexChange={lightbox.open}
+        />
+      )}
+
       <Footer />
     </>
   );

@@ -38,6 +38,7 @@ import {
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Footer";
 import { MiNegocioDialog } from "@/components/site/MiNegocioDialog";
+import { Ampliable, Lightbox, useLightbox } from "@/components/site/Lightbox";
 import {
   Select,
   SelectContent,
@@ -441,6 +442,7 @@ type TabEmpresa = "informacion" | "fotos" | "estadisticas";
 
 function PerfilEmpresa({ userId, verificado }: { userId: string; verificado: boolean }) {
   const [tab, setTab] = useState<TabEmpresa>("informacion");
+  const lightbox = useLightbox();
 
   const { data: negocio, isPending } = useQuery({
     queryKey: ["mi-negocio", userId],
@@ -690,13 +692,14 @@ function PerfilEmpresa({ userId, verificado }: { userId: string; verificado: boo
           <div>
             {galeria.length > 0 ? (
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                {galeria.map((url) => (
-                  <img
-                    key={url}
-                    src={url}
-                    alt=""
-                    className="aspect-square w-full rounded-lg object-cover"
-                  />
+                {galeria.map((url, i) => (
+                  <Ampliable key={url} index={i} onClick={lightbox.open}>
+                    <img
+                      src={url}
+                      alt=""
+                      className="aspect-square w-full rounded-lg object-cover transition-opacity hover:opacity-90"
+                    />
+                  </Ampliable>
                 ))}
               </div>
             ) : (
@@ -740,6 +743,13 @@ function PerfilEmpresa({ userId, verificado }: { userId: string; verificado: boo
           </div>
         )}
       </div>
+
+      <Lightbox
+        imagenes={galeria}
+        alt={negocio.nombre}
+        index={lightbox.index}
+        onIndexChange={lightbox.open}
+      />
     </div>
   );
 }
