@@ -4,7 +4,9 @@ import { Navbar } from "@/components/site/Navbar";
 import { Hero } from "@/components/site/Hero";
 import { Proyecto } from "@/components/site/Proyecto";
 import { Explora } from "@/components/site/Explora";
-import { Historias } from "@/components/site/Historias";
+// Desactivada temporalmente: usa datos de ejemplo desconectados de negocios
+// reales. Se retomará más adelante conectándola a contenido real.
+// import { Historias } from "@/components/site/Historias";
 import { Ayudar } from "@/components/site/Ayudar";
 import { Pueblos } from "@/components/site/Pueblos";
 import { Footer } from "@/components/site/Footer";
@@ -35,7 +37,7 @@ function Index() {
         <Hero />
         <Proyecto />
         <Explora />
-        <Historias />
+        {/* <Historias /> */}
         <Pueblos />
         <Ayudar />
       </main>

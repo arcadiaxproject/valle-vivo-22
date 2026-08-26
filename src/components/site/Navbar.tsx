@@ -5,7 +5,8 @@ import { useAuth } from "@/lib/auth";
 
 const links = [
   { label: "Descubre", hash: "descubre" },
-  { label: "Historias", hash: "historias" },
+  // "Historias" desactivada temporalmente junto con su sección (ver routes/index.tsx).
+  // { label: "Historias", hash: "historias" },
   { label: "Pueblos", hash: "pueblos" },
   { label: "Ayudar", hash: "ayudar" },
 ];

@@ -3,7 +3,8 @@ import { Instagram } from "lucide-react";
 const enlaces = [
   { label: "Proyecto", href: "#proyecto" },
   { label: "Descubre", href: "#descubre" },
-  { label: "Historias", href: "#historias" },
+  // "Historias" desactivada temporalmente junto con su sección (ver routes/index.tsx).
+  // { label: "Historias", href: "#historias" },
   { label: "Pueblos", href: "#pueblos" },
   { label: "Ayudar", href: "#ayudar" },
 ];
