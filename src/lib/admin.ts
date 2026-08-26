@@ -12,3 +12,14 @@ export async function fetchUsuariosAdmin(): Promise<Profile[]> {
   if (error) throw error;
   return data;
 }
+
+// Borra la cuenta por completo (auth.users), arrastrando en cascada su
+// perfil, su negocio y sus favoritos. Solo funciona si quien llama es
+// administrador (lo comprueba la Edge Function con la service role key).
+export async function eliminarUsuario(userId: string): Promise<void> {
+  const { data, error } = await supabase.functions.invoke<{ error?: string }>("eliminar-usuario", {
+    body: { userId },
+  });
+  if (error) throw error;
+  if (data?.error) throw new Error(data.error);
+}

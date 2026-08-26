@@ -128,3 +128,8 @@ export async function retirarNegocio(id: string): Promise<void> {
   const { error } = await supabase.from("negocios").update({ aprobado: false }).eq("id", id);
   if (error) throw error;
 }
+
+export async function eliminarNegocio(id: string): Promise<void> {
+  const { error } = await supabase.from("negocios").delete().eq("id", id);
+  if (error) throw error;
+}

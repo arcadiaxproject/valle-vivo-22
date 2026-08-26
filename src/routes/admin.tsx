@@ -2,10 +2,16 @@ import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { BadgeCheck, ExternalLink, Store, UserRound } from "lucide-react";
+import { BadgeCheck, ExternalLink, Store, Trash2, UserRound } from "lucide-react";
 import { useAuth } from "@/lib/auth";
-import { aprobarNegocio, fetchNegociosAdmin, retirarNegocio, type Negocio } from "@/lib/negocios";
-import { fetchUsuariosAdmin, type Profile } from "@/lib/admin";
+import {
+  aprobarNegocio,
+  eliminarNegocio,
+  fetchNegociosAdmin,
+  retirarNegocio,
+  type Negocio,
+} from "@/lib/negocios";
+import { eliminarUsuario, fetchUsuariosAdmin, type Profile } from "@/lib/admin";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Footer";
 
@@ -67,6 +73,39 @@ function AdminPage() {
     }
   }
 
+  async function handleEliminarNegocio(n: Negocio) {
+    if (!window.confirm(`¿Borrar "${n.nombre}" para siempre? Esta acción no se puede deshacer.`)) {
+      return;
+    }
+    try {
+      await eliminarNegocio(n.id);
+      toast.success(`"${n.nombre}" borrado`);
+      await queryClient.invalidateQueries({ queryKey: ["admin-negocios"] });
+      await queryClient.invalidateQueries({ queryKey: ["negocios"] });
+    } catch {
+      toast.error("No se ha podido borrar el negocio");
+    }
+  }
+
+  async function handleEliminarUsuario(u: Profile) {
+    if (
+      !window.confirm(
+        `¿Borrar la cuenta de "${u.nombre}" para siempre? Se borrará también su negocio y sus favoritos. Esta acción no se puede deshacer.`,
+      )
+    ) {
+      return;
+    }
+    try {
+      await eliminarUsuario(u.id);
+      toast.success(`Cuenta de "${u.nombre}" borrada`);
+      await queryClient.invalidateQueries({ queryKey: ["admin-usuarios"] });
+      await queryClient.invalidateQueries({ queryKey: ["admin-negocios"] });
+      await queryClient.invalidateQueries({ queryKey: ["negocios"] });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "No se ha podido borrar la cuenta");
+    }
+  }
+
   return (
     <>
       <Navbar />
@@ -111,7 +150,12 @@ function AdminPage() {
                     </h2>
                     <div className="mt-3 divide-y divide-border rounded-2xl border border-border bg-card">
                       {pendientes.map((n) => (
-                        <FilaNegocio key={n.id} n={n} onToggle={() => void toggleAprobado(n)} />
+                        <FilaNegocio
+                          key={n.id}
+                          n={n}
+                          onToggle={() => void toggleAprobado(n)}
+                          onEliminar={() => void handleEliminarNegocio(n)}
+                        />
                       ))}
                     </div>
                   </section>
@@ -128,7 +172,12 @@ function AdminPage() {
                       </p>
                     ) : (
                       publicados.map((n) => (
-                        <FilaNegocio key={n.id} n={n} onToggle={() => void toggleAprobado(n)} />
+                        <FilaNegocio
+                          key={n.id}
+                          n={n}
+                          onToggle={() => void toggleAprobado(n)}
+                          onEliminar={() => void handleEliminarNegocio(n)}
+                        />
                       ))
                     )}
                   </div>
@@ -141,7 +190,14 @@ function AdminPage() {
                 {usuarios.length === 0 ? (
                   <p className="p-4 text-sm text-muted-foreground">Todavía no hay usuarios.</p>
                 ) : (
-                  usuarios.map((u) => <FilaUsuario key={u.id} u={u} />)
+                  usuarios.map((u) => (
+                    <FilaUsuario
+                      key={u.id}
+                      u={u}
+                      esUnoMismo={u.id === profile.id}
+                      onEliminar={() => void handleEliminarUsuario(u)}
+                    />
+                  ))
                 )}
               </div>
             )}
@@ -153,7 +209,15 @@ function AdminPage() {
   );
 }
 
-function FilaNegocio({ n, onToggle }: { n: Negocio; onToggle: () => void }) {
+function FilaNegocio({
+  n,
+  onToggle,
+  onEliminar,
+}: {
+  n: Negocio;
+  onToggle: () => void;
+  onEliminar: () => void;
+}) {
   return (
     <div className="flex items-center justify-between gap-4 p-4">
       <div className="flex min-w-0 items-center gap-3">
@@ -190,12 +254,27 @@ function FilaNegocio({ n, onToggle }: { n: Negocio; onToggle: () => void }) {
         >
           {n.aprobado ? "Retirar" : "Aprobar"}
         </button>
+        <button
+          onClick={onEliminar}
+          aria-label={`Borrar ${n.nombre}`}
+          className="text-muted-foreground transition-colors hover:text-destructive"
+        >
+          <Trash2 className="size-4" />
+        </button>
       </div>
     </div>
   );
 }
 
-function FilaUsuario({ u }: { u: Profile }) {
+function FilaUsuario({
+  u,
+  esUnoMismo,
+  onEliminar,
+}: {
+  u: Profile;
+  esUnoMismo: boolean;
+  onEliminar: () => void;
+}) {
   return (
     <div className="flex items-center justify-between gap-4 p-4">
       <div className="flex min-w-0 items-center gap-3">
@@ -207,14 +286,28 @@ function FilaUsuario({ u }: { u: Profile }) {
           )}
         </div>
         <div className="min-w-0">
-          <p className="truncate text-sm font-semibold">{u.nombre}</p>
+          <p className="truncate text-sm font-semibold">
+            {u.nombre}
+            {esUnoMismo && <span className="ml-1.5 text-xs text-muted-foreground">(tú)</span>}
+          </p>
           <p className="text-xs text-muted-foreground">
             {u.role === "comercio" ? "Negocio" : u.role === "cliente" ? "Visitante" : "Sin rol"} ·
             desde {new Date(u.created_at).toLocaleDateString("es-ES")}
           </p>
         </div>
       </div>
-      {u.distintivo && <BadgeCheck className="size-4 shrink-0 text-forest" />}
+      <div className="flex shrink-0 items-center gap-3">
+        {u.distintivo && <BadgeCheck className="size-4 text-forest" />}
+        {!esUnoMismo && (
+          <button
+            onClick={onEliminar}
+            aria-label={`Borrar la cuenta de ${u.nombre}`}
+            className="text-muted-foreground transition-colors hover:text-destructive"
+          >
+            <Trash2 className="size-4" />
+          </button>
+        )}
+      </div>
     </div>
   );
 }
