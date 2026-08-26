@@ -148,70 +148,74 @@ function CuentaPage() {
         <div className="container-page grid min-h-0 flex-1 gap-6 py-5 lg:grid-cols-[260px_1fr]">
           {/* Sidebar de perfil */}
           <aside className="min-h-0 overflow-y-auto">
-            <div className="relative overflow-hidden rounded-2xl p-5 text-primary-foreground shadow-lift">
-              <div
-                className="absolute inset-0 -z-10"
-                style={{
-                  background:
-                    "radial-gradient(140% 90% at 20% 0%, #2c4126 0%, var(--forest-deep) 55%, var(--bark) 100%)",
-                }}
-              />
-              <div className="group relative w-fit">
-                {profile?.avatar_url ? (
-                  <img
-                    src={profile.avatar_url}
-                    alt={profile.nombre}
-                    width={80}
-                    height={80}
-                    className="size-20 rounded-full object-cover ring-4 ring-primary-foreground/15"
+            <div className="relative overflow-hidden rounded-2xl border border-primary-foreground/10 p-6 text-primary-foreground shadow-lift">
+              <div className="absolute inset-0 -z-10 bg-[var(--forest-deep)]" />
+              <div className="absolute inset-x-0 top-0 -z-10 h-24 bg-gradient-to-b from-primary-foreground/[0.06] to-transparent" />
+
+              <div className="flex items-center gap-4">
+                <div className="group relative shrink-0">
+                  {profile?.avatar_url ? (
+                    <img
+                      src={profile.avatar_url}
+                      alt={profile.nombre}
+                      width={64}
+                      height={64}
+                      className="size-16 rounded-full object-cover ring-2 ring-primary-foreground/15"
+                    />
+                  ) : (
+                    <div className="flex size-16 items-center justify-center rounded-full bg-primary-foreground/10 ring-2 ring-primary-foreground/15">
+                      <UserRound className="size-6 text-primary-foreground/70" />
+                    </div>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => avatarInputRef.current?.click()}
+                    disabled={uploadingAvatar}
+                    aria-label="Cambiar foto de perfil"
+                    className="absolute -bottom-1 -right-1 flex size-6 items-center justify-center rounded-full border-2 border-[var(--forest-deep)] bg-accent text-accent-foreground shadow-soft transition-transform hover:scale-105 disabled:opacity-60"
+                  >
+                    <Camera className="size-3" />
+                  </button>
+                  <input
+                    ref={avatarInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => void handleAvatarChange(e)}
                   />
-                ) : (
-                  <div className="flex size-20 items-center justify-center rounded-full bg-primary-foreground/10 ring-4 ring-primary-foreground/15">
-                    <UserRound className="size-8 text-primary-foreground/70" />
-                  </div>
-                )}
-                <button
-                  type="button"
-                  onClick={() => avatarInputRef.current?.click()}
-                  disabled={uploadingAvatar}
-                  aria-label="Cambiar foto de perfil"
-                  className="absolute -bottom-1 -right-1 flex size-7 items-center justify-center rounded-full border-2 border-forest-deep bg-accent text-accent-foreground shadow-soft transition-transform hover:scale-105 disabled:opacity-60"
-                >
-                  <Camera className="size-3.5" />
-                </button>
-                <input
-                  ref={avatarInputRef}
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={(e) => void handleAvatarChange(e)}
-                />
+                </div>
+
+                <div className="min-w-0">
+                  <h1 className="truncate font-serif text-lg font-semibold leading-tight">
+                    {profile?.nombre ?? user.email}
+                  </h1>
+                  <p className="mt-0.5 truncate text-sm text-primary-foreground/55">{user.email}</p>
+                </div>
               </div>
+
               {uploadingAvatar && (
-                <p className="mt-1.5 text-xs text-primary-foreground/60">Subiendo foto…</p>
+                <p className="mt-2 text-xs text-primary-foreground/60">Subiendo foto…</p>
               )}
 
-              <h1 className="mt-3 font-serif text-xl font-semibold leading-tight">
-                {profile?.nombre ?? user.email}
-              </h1>
-              <p className="mt-0.5 truncate text-sm text-primary-foreground/55">{user.email}</p>
-
-              <span className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-terracotta/50 bg-terracotta/20 px-3 py-1 text-xs font-bold uppercase tracking-wide text-[#f0a67c]">
+              <span className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-primary-foreground/20 bg-primary-foreground/5 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary-foreground/80">
                 {esComercio ? <Store className="size-3.5" /> : <UserRound className="size-3.5" />}
                 {profile?.role ? ROLE_LABEL[profile.role] : "Sin definir"}
+                {Boolean(profile?.distintivo) && (
+                  <BadgeCheck className="size-3.5 text-[#f0a67c]" />
+                )}
               </span>
 
-              <dl className="mt-4 space-y-2.5 border-t border-primary-foreground/12 pt-4 text-sm">
+              <dl className="mt-5 space-y-3 border-t border-primary-foreground/10 pt-4 text-sm">
                 <div className="flex items-center justify-between gap-3">
                   <dt className="flex items-center gap-2 text-primary-foreground/55">
-                    <Award className="size-4 text-[#f0a67c]" />
+                    <Award className="size-4 text-primary-foreground/40" />
                     Distintivo
                   </dt>
                   <dd className="font-semibold">{profile?.distintivo ? "Activo" : "Todavía no"}</dd>
                 </div>
                 <div className="flex items-center justify-between gap-3">
                   <dt className="flex items-center gap-2 text-primary-foreground/55">
-                    <CalendarDays className="size-4 text-wood" />
+                    <CalendarDays className="size-4 text-primary-foreground/40" />
                     Miembro desde
                   </dt>
                   <dd className="font-semibold">{miembroDesde}</dd>
@@ -283,33 +287,71 @@ function CuentaPage() {
               )}
 
               {activeTab === "cuenta" && (
-                <div className="h-full max-w-sm overflow-y-auto rounded-2xl border border-border bg-card p-6 shadow-soft">
-                  <h2 className="text-lg font-bold">Editar datos</h2>
-                  <form onSubmit={handleSubmit} className="mt-4 grid gap-4">
-                    <div className="grid gap-2">
-                      <Label htmlFor="nombre">Nombre</Label>
-                      <Input
-                        id="nombre"
-                        value={nombre}
-                        onChange={(e) => setNombre(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="email">Email</Label>
-                      <Input id="email" value={user.email ?? ""} disabled />
-                      <p className="text-xs text-muted-foreground">
-                        El email viene de tu cuenta de Google y no se puede cambiar aquí.
+                <div className="h-full max-w-2xl space-y-6 overflow-y-auto pb-2">
+                  <div className="rounded-2xl border border-border bg-card p-6 shadow-soft">
+                    <div>
+                      <h2 className="text-base font-bold">Datos personales</h2>
+                      <p className="mt-0.5 text-sm text-muted-foreground">
+                        Así es como te verán el resto de personas del Valle.
                       </p>
                     </div>
+                    <form onSubmit={handleSubmit} className="mt-5 grid gap-4 sm:max-w-sm">
+                      <div className="grid gap-2">
+                        <Label htmlFor="nombre">Nombre</Label>
+                        <Input
+                          id="nombre"
+                          value={nombre}
+                          onChange={(e) => setNombre(e.target.value)}
+                          required
+                        />
+                      </div>
+                      <button
+                        type="submit"
+                        disabled={saving || nombre === (profile?.nombre ?? "")}
+                        className="mt-1 w-fit rounded-lg bg-accent px-6 py-2.5 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90 disabled:opacity-60"
+                      >
+                        {saving ? "Guardando…" : "Guardar cambios"}
+                      </button>
+                    </form>
+                  </div>
+
+                  <div className="rounded-2xl border border-border bg-card p-6 shadow-soft">
+                    <h2 className="text-base font-bold">Detalles de la cuenta</h2>
+                    <dl className="mt-5 divide-y divide-border text-sm sm:max-w-sm">
+                      <div className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
+                        <dt className="text-muted-foreground">Email</dt>
+                        <dd className="truncate font-semibold">{user.email}</dd>
+                      </div>
+                      <div className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
+                        <dt className="text-muted-foreground">Tipo de cuenta</dt>
+                        <dd className="font-semibold">
+                          {profile?.role ? ROLE_LABEL[profile.role] : "Sin definir"}
+                        </dd>
+                      </div>
+                      <div className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
+                        <dt className="text-muted-foreground">Miembro desde</dt>
+                        <dd className="font-semibold">{miembroDesde}</dd>
+                      </div>
+                    </dl>
+                    <p className="mt-4 text-xs text-muted-foreground">
+                      El acceso se gestiona con tu cuenta de Google, así que el email no se puede
+                      cambiar desde aquí.
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl border border-border bg-card p-6 shadow-soft">
+                    <h2 className="text-base font-bold">Sesión</h2>
+                    <p className="mt-0.5 text-sm text-muted-foreground">
+                      Cierra tu sesión en este dispositivo.
+                    </p>
                     <button
-                      type="submit"
-                      disabled={saving}
-                      className="mt-1 w-fit rounded-lg bg-accent px-6 py-2.5 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90 disabled:opacity-60"
+                      onClick={() => void signOut()}
+                      className="mt-4 inline-flex items-center gap-2 rounded-lg border border-border px-5 py-2.5 text-sm font-semibold transition-colors hover:bg-secondary"
                     >
-                      {saving ? "Guardando…" : "Guardar cambios"}
+                      <LogOut className="size-4" />
+                      Cerrar sesión
                     </button>
-                  </form>
+                  </div>
                 </div>
               )}
             </div>
@@ -335,7 +377,35 @@ function PerfilNegocioEmpresa({ negocio, verificado }: { negocio: Negocio; verif
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      {/* Cabecera de empresa */}
+      {/* Barra de gestión */}
+      <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-b border-border px-5 py-4">
+        <div className="min-w-0">
+          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+            Mi negocio
+          </p>
+          <h2 className="truncate font-serif text-xl font-semibold leading-tight">
+            {negocio.nombre}
+          </h2>
+        </div>
+        <div className="flex shrink-0 items-center gap-2.5">
+          <Link
+            to="/negocio/$id"
+            params={{ id: negocio.id }}
+            className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-secondary"
+          >
+            <ExternalLink className="size-4" />
+            Ver ficha pública
+          </Link>
+          <MiNegocioDialog>
+            <button className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90">
+              <Pencil className="size-4" />
+              Editar
+            </button>
+          </MiNegocioDialog>
+        </div>
+      </div>
+
+      {/* Vista previa de la ficha pública */}
       <div className="relative shrink-0 overflow-hidden">
         {negocio.imagen ? (
           <img src={negocio.imagen} alt="" className="absolute inset-0 size-full object-cover" />
@@ -344,27 +414,7 @@ function PerfilNegocioEmpresa({ negocio, verificado }: { negocio: Negocio; verif
         )}
         <div className="absolute inset-0 bg-[linear-gradient(to_top,oklch(0.14_0.02_60/0.88)_0%,oklch(0.14_0.02_60/0.05)_65%)]" />
 
-        <div className="relative flex flex-wrap items-start justify-between gap-4 px-5 py-4">
-          <div className="min-w-0" />
-          <div className="flex shrink-0 items-center gap-2.5">
-            <Link
-              to="/negocio/$id"
-              params={{ id: negocio.id }}
-              className="inline-flex items-center gap-2 rounded-lg border border-primary-foreground/25 bg-[oklch(0.14_0.02_60/0.5)] px-4 py-2.5 text-sm font-semibold text-primary-foreground backdrop-blur-sm transition-colors hover:bg-[oklch(0.14_0.02_60/0.7)]"
-            >
-              <ExternalLink className="size-4" />
-              Ver ficha pública
-            </Link>
-            <MiNegocioDialog>
-              <button className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90">
-                <Pencil className="size-4" />
-                Editar
-              </button>
-            </MiNegocioDialog>
-          </div>
-        </div>
-
-        <div className="relative px-5 pb-5 pt-16 sm:pt-24">
+        <div className="relative px-5 pb-5 pt-16 sm:pt-20">
           <div className="flex flex-wrap items-center gap-2">
             <span
               className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-[0.7rem] font-bold uppercase tracking-widest"
@@ -388,10 +438,6 @@ function PerfilNegocioEmpresa({ negocio, verificado }: { negocio: Negocio; verif
               </span>
             )}
           </div>
-
-          <h2 className="mt-2.5 truncate font-serif text-2xl font-semibold leading-tight text-primary-foreground">
-            {negocio.nombre}
-          </h2>
 
           <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-primary-foreground/70">
             <span className="inline-flex items-center gap-1.5">
