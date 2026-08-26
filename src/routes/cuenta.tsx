@@ -4,9 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
   ArrowLeft,
-  Award,
   BadgeCheck,
-  CalendarDays,
   Camera,
   ExternalLink,
   Images,
@@ -26,11 +24,6 @@ import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Footer";
 import { MiNegocioDialog } from "@/components/site/MiNegocioDialog";
 import heroValle from "@/assets/hero-valle.jpg";
-
-const ROLE_LABEL: Record<"cliente" | "comercio", string> = {
-  cliente: "Visitante",
-  comercio: "Negocio",
-};
 
 // Mismo acento por categoría que en el listado del Valle.
 const CATEGORIA_ACENTOS: Record<string, string> = {
@@ -83,12 +76,6 @@ function CuentaPage() {
   }
 
   const esComercio = profile?.role === "comercio";
-
-  const miembroDesde = new Date(user.created_at).toLocaleDateString("es-ES", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
 
   async function guardarNombre() {
     const limpio = nombre.trim();
@@ -221,36 +208,15 @@ function CuentaPage() {
                   style={{ width: `${Math.max(nombre.length, 3)}ch` }}
                 />
               ) : (
-                <button
-                  type="button"
+                <h1
                   onClick={() => setEditingNombre(true)}
-                  className="group/name inline-flex max-w-full items-center gap-2 rounded-lg px-1 text-center font-serif text-2xl font-semibold leading-tight text-foreground transition-opacity hover:opacity-80 sm:text-3xl"
+                  className="group/name inline-flex max-w-full cursor-pointer items-center gap-2 rounded-lg px-1 text-center font-serif text-2xl font-semibold leading-tight text-foreground transition-opacity hover:opacity-80 sm:text-3xl"
                 >
                   <span className="truncate">{profile?.nombre ?? user.email}</span>
                   <Pencil className="size-4 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover/name:opacity-100" />
-                </button>
+                </h1>
               )}
             </div>
-
-            <p className="mt-1 truncate text-sm text-muted-foreground">{user.email}</p>
-
-            <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs font-semibold uppercase tracking-wide text-foreground">
-                {esComercio ? <Store className="size-3.5" /> : <UserRound className="size-3.5" />}
-                {profile?.role ? ROLE_LABEL[profile.role] : "Sin definir"}
-              </span>
-              {Boolean(profile?.distintivo) && (
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-terracotta/30 bg-terracotta/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-terracotta">
-                  <Award className="size-3.5" />
-                  Distintivo
-                </span>
-              )}
-            </div>
-
-            <p className="mt-4 flex items-center gap-1.5 text-xs text-muted-foreground">
-              <CalendarDays className="size-3.5" />
-              Miembro desde {miembroDesde}
-            </p>
           </div>
 
           {/* Negocio */}
