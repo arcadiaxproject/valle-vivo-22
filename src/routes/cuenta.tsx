@@ -490,7 +490,7 @@ function PerfilEmpresa({ userId }: { userId: string }) {
       {!negocio.aprobado && (
         <div className="flex items-center gap-2.5 border-b border-terracotta/30 bg-terracotta/10 px-6 py-3 text-sm font-semibold text-terracotta sm:px-8">
           <Clock className="size-4 shrink-0" />
-          Pendiente de aprobación — todavía no aparece en la web pública del Valle.
+          Pendiente de validaccion — todavía no aparece como verificado.
         </div>
       )}
       <div className="flex flex-wrap items-start justify-between gap-4 p-6 sm:p-8">
