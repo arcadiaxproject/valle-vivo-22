@@ -63,57 +63,54 @@ function CategoriaPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-bark text-primary-foreground">
-        <div className="relative flex min-h-[60vh] items-center overflow-hidden sm:min-h-[70vh]">
-          {bgImage && (
-            <img
-              src={bgImage}
-              alt=""
-              aria-hidden="true"
-              className="absolute inset-0 size-full object-cover"
-            />
-          )}
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,oklch(0.19_0.012_120/0.94)_0%,oklch(0.19_0.012_120/0.8)_34%,oklch(0.19_0.012_120/0.2)_64%,transparent_88%)]" />
+      <main className="relative min-h-screen">
+        {bgImage && (
+          <img src={bgImage} alt="" className="fixed inset-0 -z-10 size-full object-cover" />
+        )}
+        <div className="fixed inset-0 -z-10 bg-[oklch(0.14_0.02_60/0.45)]" />
 
-          <div className="container-page relative z-10 pt-24 sm:pt-28">
-            <Link
-              to="/"
-              hash="descubre"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-primary-foreground/70 transition-opacity hover:opacity-70"
-            >
-              <ArrowLeft className="size-4" />
-              Volver a explorar el Valle
-            </Link>
+        <div className="container-page relative pt-24 sm:pt-28">
+          <Link
+            to="/"
+            hash="descubre"
+            className="mx-auto flex max-w-5xl items-center gap-2 text-sm font-semibold text-primary-foreground/90 transition-opacity hover:opacity-70"
+          >
+            <ArrowLeft className="size-4" />
+            Volver a explorar el Valle
+          </Link>
+        </div>
 
-            <div className="mt-10 max-w-md">
+        <div className="container-page pb-24 pt-10 sm:pt-16">
+          <div className="mx-auto max-w-5xl animate-in fade-in slide-in-from-bottom-2 overflow-hidden rounded-2xl border border-border bg-card shadow-lift duration-700">
+            <div className="p-6 sm:p-8">
               <span
                 className="inline-flex items-center rounded-full border px-3 py-1 text-xs font-bold uppercase tracking-[0.18em]"
                 style={{
                   color: acento,
-                  borderColor: `${acento}66`,
-                  backgroundColor: `${acento}1a`,
+                  borderColor: `${acento}55`,
+                  backgroundColor: `${acento}14`,
                 }}
               >
                 {categoria}
               </span>
-              <h1 className="mt-5 font-serif text-6xl italic leading-[1.05] sm:text-7xl">
+              <h1 className="mt-5 font-serif text-4xl italic leading-[1.05] sm:text-5xl">
                 {categoria}
               </h1>
               {descripcion && (
-                <p className="mt-5 text-base leading-relaxed text-primary-foreground/70">
+                <p className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground">
                   {descripcion}
                 </p>
               )}
               {!isPending && (
-                <div className="mt-7 flex items-center gap-6 border-t border-primary-foreground/15 pt-5">
+                <div className="mt-5 flex items-center gap-6 border-t border-border pt-4">
                   <span className="flex items-baseline gap-1.5">
                     <span className="font-serif text-xl font-semibold">{negocios.length}</span>
-                    <span className="text-xs text-primary-foreground/55">
+                    <span className="text-xs text-muted-foreground">
                       {negocios.length === 1 ? "negocio" : "negocios"}
                     </span>
                   </span>
                   {negocios.length > 0 && (
-                    <span className="flex items-center gap-1.5 text-xs text-primary-foreground/65">
+                    <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
                       <span className="size-1.5 rounded-full bg-leaf" aria-hidden="true" />
                       {negocios.filter((n) => n.abierto).length} abiertos ahora
                     </span>
@@ -121,37 +118,37 @@ function CategoriaPage() {
                 </div>
               )}
             </div>
+
+            <div className="border-t border-border p-6 sm:p-8">
+              {isError && (
+                <p className="text-sm text-muted-foreground">
+                  No se han podido cargar los negocios.
+                </p>
+              )}
+
+              {isPending && (
+                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                  {[0, 1, 2].map((i) => (
+                    <div key={i} className="h-96 animate-pulse rounded-2xl bg-secondary/60" />
+                  ))}
+                </div>
+              )}
+
+              {!isPending && !isError && negocios.length === 0 && (
+                <p className="text-sm text-muted-foreground">
+                  Todavía no hay negocios registrados en "{categoria}". ¡Vuelve pronto!
+                </p>
+              )}
+
+              {!isPending && !isError && negocios.length > 0 && (
+                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                  {negocios.map((n, i) => (
+                    <NegocioCard key={n.id} n={n} delay={i * 60} accent={acento} />
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-
-        <div className="container-page border-t border-primary-foreground/10 py-16 sm:py-20">
-          {isError && (
-            <p className="text-sm text-primary-foreground/60">
-              No se han podido cargar los negocios.
-            </p>
-          )}
-
-          {isPending && (
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {[0, 1, 2].map((i) => (
-                <div key={i} className="h-96 animate-pulse rounded-2xl bg-primary-foreground/5" />
-              ))}
-            </div>
-          )}
-
-          {!isPending && !isError && negocios.length === 0 && (
-            <p className="text-sm text-primary-foreground/60">
-              Todavía no hay negocios registrados en "{categoria}". ¡Vuelve pronto!
-            </p>
-          )}
-
-          {!isPending && !isError && negocios.length > 0 && (
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {negocios.map((n, i) => (
-                <NegocioCard key={n.id} n={n} delay={i * 60} accent={acento} />
-              ))}
-            </div>
-          )}
         </div>
       </main>
       <Footer />
