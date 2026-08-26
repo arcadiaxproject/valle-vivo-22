@@ -101,7 +101,7 @@ export function Ampliable({
     <button
       type="button"
       onClick={() => onClick(index)}
-      className={`block cursor-zoom-in text-left ${className}`}
+      className={`block w-full cursor-zoom-in text-left ${className}`}
     >
       {children}
     </button>
