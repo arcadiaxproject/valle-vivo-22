@@ -99,37 +99,33 @@ function CuentaPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-background">
-        <div className="relative h-40 w-full overflow-hidden sm:h-52">
-          <img src={heroValle} alt="" className="absolute inset-0 size-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-b from-[oklch(0.14_0.02_60/0.55)] to-[var(--background)]" />
+      <main className="relative min-h-screen">
+        <img src={heroValle} alt="" className="fixed inset-0 -z-10 size-full object-cover" />
+        <div className="fixed inset-0 -z-10 bg-[oklch(0.14_0.02_60/0.45)]" />
 
-          <div className="container-page relative flex max-w-4xl items-center justify-between gap-4 pt-24 sm:pt-28">
-            <Link
-              to="/"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-primary-foreground/90 transition-colors hover:text-primary-foreground"
-            >
-              <ArrowLeft className="size-4" />
-              Volver al Valle
-            </Link>
-            <button
-              onClick={() => void signOut()}
-              className="inline-flex items-center gap-2 text-sm font-semibold text-primary-foreground/90 transition-colors hover:text-primary-foreground"
-            >
-              <LogOut className="size-4" />
-              Cerrar sesión
-            </button>
-          </div>
+        <div className="container-page relative flex max-w-4xl items-center justify-between gap-4 pt-24 sm:pt-28">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-primary-foreground/90 transition-colors hover:text-primary-foreground"
+          >
+            <ArrowLeft className="size-4" />
+            Volver al Valle
+          </Link>
+          <button
+            onClick={() => void signOut()}
+            className="inline-flex items-center gap-2 text-sm font-semibold text-primary-foreground/90 transition-colors hover:text-primary-foreground"
+          >
+            <LogOut className="size-4" />
+            Cerrar sesión
+          </button>
         </div>
 
-        <div className="container-page max-w-4xl pb-24">
-          <div className="-mt-16 sm:-mt-20">
-            {profile.role === "comercio" ? (
-              <PerfilEmpresa userId={user.id} verificado={profile.distintivo} />
-            ) : (
-              <PerfilUsuario />
-            )}
-          </div>
+        <div className="container-page max-w-4xl pb-24 pt-8">
+          {profile.role === "comercio" ? (
+            <PerfilEmpresa userId={user.id} verificado={profile.distintivo} />
+          ) : (
+            <PerfilUsuario />
+          )}
         </div>
       </main>
       <Footer />
