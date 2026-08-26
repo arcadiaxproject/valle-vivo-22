@@ -25,8 +25,6 @@ import { fetchMiNegocio, subirArchivoNegocio, type Negocio } from "@/lib/negocio
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Footer";
 import { MiNegocioDialog } from "@/components/site/MiNegocioDialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 const ROLE_LABEL: Record<"cliente" | "comercio", string> = {
   cliente: "Visitante",
@@ -48,17 +46,16 @@ export const Route = createFileRoute("/cuenta")({
   component: CuentaPage,
 });
 
-type Tab = "negocio" | "cuenta";
-
 function CuentaPage() {
   const { user, profile, loading, signOut, updateProfile } = useAuth();
   const navigate = useNavigate();
 
   const [nombre, setNombre] = useState("");
-  const [saving, setSaving] = useState(false);
-  const [tab, setTab] = useState<Tab>("negocio");
+  const [editingNombre, setEditingNombre] = useState(false);
+  const [savingNombre, setSavingNombre] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const avatarInputRef = useRef<HTMLInputElement>(null);
+  const nombreInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (profile) setNombre(profile.nombre);
@@ -78,14 +75,13 @@ function CuentaPage() {
     return (
       <>
         <Navbar />
-        <main className="min-h-screen bg-stone pb-24 pt-32 sm:pt-36" />
+        <main className="min-h-screen bg-background pb-24 pt-32 sm:pt-36" />
         <Footer />
       </>
     );
   }
 
   const esComercio = profile?.role === "comercio";
-  const activeTab: Tab = esComercio ? tab : "cuenta";
 
   const miembroDesde = new Date(user.created_at).toLocaleDateString("es-ES", {
     day: "numeric",
@@ -93,16 +89,22 @@ function CuentaPage() {
     year: "numeric",
   });
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setSaving(true);
+  async function guardarNombre() {
+    const limpio = nombre.trim();
+    if (!profile || !limpio || limpio === profile.nombre) {
+      setNombre(profile?.nombre ?? "");
+      setEditingNombre(false);
+      return;
+    }
+    setSavingNombre(true);
     try {
-      await updateProfile({ nombre });
-      toast.success("Datos actualizados");
+      await updateProfile({ nombre: limpio });
     } catch {
-      toast.error("No se han podido guardar los cambios");
+      toast.error("No se ha podido guardar el nombre");
+      setNombre(profile.nombre);
     } finally {
-      setSaving(false);
+      setSavingNombre(false);
+      setEditingNombre(false);
     }
   }
 
@@ -125,237 +127,152 @@ function CuentaPage() {
   return (
     <>
       <Navbar />
-      <main className="flex min-h-screen flex-col bg-stone lg:h-screen lg:overflow-hidden">
-        <div className="shrink-0 border-b border-border bg-card pt-24 sm:pt-28">
-          <div className="container-page flex items-center justify-between gap-4 pb-4">
+      <main className="min-h-screen bg-background">
+        <div className="container-page max-w-2xl pb-24 pt-28 sm:pt-32">
+          <div className="flex items-center justify-between">
             <Link
               to="/"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground transition-opacity hover:opacity-70"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground"
             >
               <ArrowLeft className="size-4" />
               Volver al Valle
             </Link>
             <button
               onClick={() => void signOut()}
-              className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-semibold transition-colors hover:bg-secondary"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground"
             >
               <LogOut className="size-4" />
               Cerrar sesión
             </button>
           </div>
-        </div>
 
-        <div className="container-page grid min-h-0 flex-1 gap-6 py-5 lg:grid-cols-[260px_1fr]">
-          {/* Sidebar de perfil */}
-          <aside className="min-h-0 overflow-y-auto">
-            <div className="relative overflow-hidden rounded-2xl border border-primary-foreground/10 p-6 text-primary-foreground shadow-lift">
-              <div className="absolute inset-0 -z-10 bg-[var(--forest-deep)]" />
-              <div className="absolute inset-x-0 top-0 -z-10 h-24 bg-gradient-to-b from-primary-foreground/[0.06] to-transparent" />
-
-              <div className="flex items-center gap-4">
-                <div className="group relative shrink-0">
-                  {profile?.avatar_url ? (
-                    <img
-                      src={profile.avatar_url}
-                      alt={profile.nombre}
-                      width={64}
-                      height={64}
-                      className="size-16 rounded-full object-cover ring-2 ring-primary-foreground/15"
-                    />
-                  ) : (
-                    <div className="flex size-16 items-center justify-center rounded-full bg-primary-foreground/10 ring-2 ring-primary-foreground/15">
-                      <UserRound className="size-6 text-primary-foreground/70" />
-                    </div>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => avatarInputRef.current?.click()}
-                    disabled={uploadingAvatar}
-                    aria-label="Cambiar foto de perfil"
-                    className="absolute -bottom-1 -right-1 flex size-6 items-center justify-center rounded-full border-2 border-[var(--forest-deep)] bg-accent text-accent-foreground shadow-soft transition-transform hover:scale-105 disabled:opacity-60"
-                  >
-                    <Camera className="size-3" />
-                  </button>
-                  <input
-                    ref={avatarInputRef}
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(e) => void handleAvatarChange(e)}
-                  />
+          {/* Identidad */}
+          <div className="mx-auto mt-14 flex max-w-sm animate-in fade-in slide-in-from-bottom-3 flex-col items-center text-center duration-700 sm:mt-20">
+            <div className="group relative">
+              {profile?.avatar_url ? (
+                <img
+                  src={profile.avatar_url}
+                  alt={profile.nombre}
+                  width={96}
+                  height={96}
+                  className="size-24 rounded-full object-cover shadow-soft ring-4 ring-card transition-transform duration-300 group-hover:scale-[1.03]"
+                />
+              ) : (
+                <div className="flex size-24 items-center justify-center rounded-full bg-secondary shadow-soft ring-4 ring-card transition-transform duration-300 group-hover:scale-[1.03]">
+                  <UserRound className="size-9 text-muted-foreground" />
                 </div>
-
-                <div className="min-w-0">
-                  <h1 className="truncate font-serif text-lg font-semibold leading-tight">
-                    {profile?.nombre ?? user.email}
-                  </h1>
-                  <p className="mt-0.5 truncate text-sm text-primary-foreground/55">{user.email}</p>
-                </div>
-              </div>
-
-              {uploadingAvatar && (
-                <p className="mt-2 text-xs text-primary-foreground/60">Subiendo foto…</p>
-              )}
-
-              <span className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-primary-foreground/20 bg-primary-foreground/5 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary-foreground/80">
-                {esComercio ? <Store className="size-3.5" /> : <UserRound className="size-3.5" />}
-                {profile?.role ? ROLE_LABEL[profile.role] : "Sin definir"}
-                {Boolean(profile?.distintivo) && (
-                  <BadgeCheck className="size-3.5 text-[#f0a67c]" />
-                )}
-              </span>
-
-              <dl className="mt-5 space-y-3 border-t border-primary-foreground/10 pt-4 text-sm">
-                <div className="flex items-center justify-between gap-3">
-                  <dt className="flex items-center gap-2 text-primary-foreground/55">
-                    <Award className="size-4 text-primary-foreground/40" />
-                    Distintivo
-                  </dt>
-                  <dd className="font-semibold">{profile?.distintivo ? "Activo" : "Todavía no"}</dd>
-                </div>
-                <div className="flex items-center justify-between gap-3">
-                  <dt className="flex items-center gap-2 text-primary-foreground/55">
-                    <CalendarDays className="size-4 text-primary-foreground/40" />
-                    Miembro desde
-                  </dt>
-                  <dd className="font-semibold">{miembroDesde}</dd>
-                </div>
-              </dl>
-            </div>
-          </aside>
-
-          {/* Contenido con pestañas */}
-          <div className="flex min-h-0 flex-col">
-            <div className="flex shrink-0 gap-6 border-b border-border">
-              {esComercio && (
-                <button
-                  onClick={() => setTab("negocio")}
-                  className={`flex items-center gap-2 border-b-2 pb-3 text-sm font-semibold transition-colors ${
-                    activeTab === "negocio"
-                      ? "border-forest text-foreground"
-                      : "border-transparent text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  <Store className="size-4" />
-                  Mi negocio
-                </button>
               )}
               <button
-                onClick={() => setTab("cuenta")}
-                className={`flex items-center gap-2 border-b-2 pb-3 text-sm font-semibold transition-colors ${
-                  activeTab === "cuenta"
-                    ? "border-forest text-foreground"
-                    : "border-transparent text-muted-foreground hover:text-foreground"
-                }`}
+                type="button"
+                onClick={() => avatarInputRef.current?.click()}
+                disabled={uploadingAvatar}
+                aria-label="Cambiar foto de perfil"
+                className="absolute inset-0 flex items-center justify-center rounded-full bg-[oklch(0.14_0.02_60/0.55)] text-primary-foreground opacity-0 backdrop-blur-[1px] transition-opacity duration-200 group-hover:opacity-100 disabled:opacity-100"
               >
-                <UserRound className="size-4" />
-                Cuenta
+                {uploadingAvatar ? (
+                  <span className="text-[0.65rem] font-semibold uppercase tracking-widest">
+                    Subiendo…
+                  </span>
+                ) : (
+                  <Camera className="size-6" />
+                )}
               </button>
+              <input
+                ref={avatarInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => void handleAvatarChange(e)}
+              />
             </div>
 
-            <div className="mt-4 min-h-0 flex-1">
-              {activeTab === "negocio" && esComercio && (
-                <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-soft">
-                  {miNegocio ? (
-                    <PerfilNegocioEmpresa
-                      negocio={miNegocio}
-                      verificado={Boolean(profile?.distintivo)}
-                    />
-                  ) : (
-                    <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 py-10 text-center">
-                      <div className="flex size-14 shrink-0 items-center justify-center rounded-full bg-secondary">
-                        <Store className="size-6 text-forest" />
-                      </div>
-                      <div className="max-w-sm">
-                        <h2 className="text-lg font-bold">
-                          Todavía no has dado de alta tu negocio
-                        </h2>
-                        <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-                          Crea tu ficha de empresa para aparecer en el listado de negocios y en el
-                          mapa del Valle.
-                        </p>
-                      </div>
-                      <MiNegocioDialog>
-                        <button className="mt-1 inline-flex items-center gap-2 rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90">
-                          <PlusCircle className="size-4" />
-                          Añadir mi negocio
-                        </button>
-                      </MiNegocioDialog>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {activeTab === "cuenta" && (
-                <div className="h-full max-w-2xl space-y-6 overflow-y-auto pb-2">
-                  <div className="rounded-2xl border border-border bg-card p-6 shadow-soft">
-                    <div>
-                      <h2 className="text-base font-bold">Datos personales</h2>
-                      <p className="mt-0.5 text-sm text-muted-foreground">
-                        Así es como te verán el resto de personas del Valle.
-                      </p>
-                    </div>
-                    <form onSubmit={handleSubmit} className="mt-5 grid gap-4 sm:max-w-sm">
-                      <div className="grid gap-2">
-                        <Label htmlFor="nombre">Nombre</Label>
-                        <Input
-                          id="nombre"
-                          value={nombre}
-                          onChange={(e) => setNombre(e.target.value)}
-                          required
-                        />
-                      </div>
-                      <button
-                        type="submit"
-                        disabled={saving || nombre === (profile?.nombre ?? "")}
-                        className="mt-1 w-fit rounded-lg bg-accent px-6 py-2.5 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90 disabled:opacity-60"
-                      >
-                        {saving ? "Guardando…" : "Guardar cambios"}
-                      </button>
-                    </form>
-                  </div>
-
-                  <div className="rounded-2xl border border-border bg-card p-6 shadow-soft">
-                    <h2 className="text-base font-bold">Detalles de la cuenta</h2>
-                    <dl className="mt-5 divide-y divide-border text-sm sm:max-w-sm">
-                      <div className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
-                        <dt className="text-muted-foreground">Email</dt>
-                        <dd className="truncate font-semibold">{user.email}</dd>
-                      </div>
-                      <div className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
-                        <dt className="text-muted-foreground">Tipo de cuenta</dt>
-                        <dd className="font-semibold">
-                          {profile?.role ? ROLE_LABEL[profile.role] : "Sin definir"}
-                        </dd>
-                      </div>
-                      <div className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
-                        <dt className="text-muted-foreground">Miembro desde</dt>
-                        <dd className="font-semibold">{miembroDesde}</dd>
-                      </div>
-                    </dl>
-                    <p className="mt-4 text-xs text-muted-foreground">
-                      El acceso se gestiona con tu cuenta de Google, así que el email no se puede
-                      cambiar desde aquí.
-                    </p>
-                  </div>
-
-                  <div className="rounded-2xl border border-border bg-card p-6 shadow-soft">
-                    <h2 className="text-base font-bold">Sesión</h2>
-                    <p className="mt-0.5 text-sm text-muted-foreground">
-                      Cierra tu sesión en este dispositivo.
-                    </p>
-                    <button
-                      onClick={() => void signOut()}
-                      className="mt-4 inline-flex items-center gap-2 rounded-lg border border-border px-5 py-2.5 text-sm font-semibold transition-colors hover:bg-secondary"
-                    >
-                      <LogOut className="size-4" />
-                      Cerrar sesión
-                    </button>
-                  </div>
-                </div>
+            <div className="mt-6">
+              {editingNombre ? (
+                <input
+                  ref={nombreInputRef}
+                  value={nombre}
+                  onChange={(e) => setNombre(e.target.value)}
+                  onBlur={() => void guardarNombre()}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      nombreInputRef.current?.blur();
+                    }
+                    if (e.key === "Escape") {
+                      setNombre(profile?.nombre ?? "");
+                      setEditingNombre(false);
+                    }
+                  }}
+                  autoFocus
+                  disabled={savingNombre}
+                  className="min-w-0 max-w-full border-b-2 border-forest bg-transparent px-1 text-center font-serif text-3xl font-semibold leading-tight text-foreground outline-none disabled:opacity-60"
+                  style={{ width: `${Math.max(nombre.length, 3)}ch` }}
+                />
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setEditingNombre(true)}
+                  className="group/name inline-flex items-center gap-2 rounded-lg px-1 font-serif text-3xl font-semibold leading-tight text-foreground transition-opacity hover:opacity-80"
+                >
+                  {profile?.nombre ?? user.email}
+                  <Pencil className="size-4 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover/name:opacity-100" />
+                </button>
               )}
             </div>
+
+            <p className="mt-1 truncate text-sm text-muted-foreground">{user.email}</p>
+
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs font-semibold uppercase tracking-wide text-foreground">
+                {esComercio ? <Store className="size-3.5" /> : <UserRound className="size-3.5" />}
+                {profile?.role ? ROLE_LABEL[profile.role] : "Sin definir"}
+              </span>
+              {Boolean(profile?.distintivo) && (
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-terracotta/30 bg-terracotta/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-terracotta">
+                  <Award className="size-3.5" />
+                  Distintivo
+                </span>
+              )}
+            </div>
+
+            <p className="mt-4 flex items-center gap-1.5 text-xs text-muted-foreground">
+              <CalendarDays className="size-3.5" />
+              Miembro desde {miembroDesde}
+            </p>
           </div>
+
+          {/* Negocio */}
+          {esComercio && (
+            <div className="mt-16 animate-in fade-in slide-in-from-bottom-2 duration-700">
+              {miNegocio ? (
+                <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-soft">
+                  <PerfilNegocioEmpresa
+                    negocio={miNegocio}
+                    verificado={Boolean(profile?.distintivo)}
+                  />
+                </div>
+              ) : (
+                <div className="flex flex-col items-center gap-4 rounded-2xl border border-dashed border-border px-6 py-12 text-center">
+                  <div className="flex size-14 shrink-0 items-center justify-center rounded-full bg-secondary">
+                    <Store className="size-6 text-forest" />
+                  </div>
+                  <div className="max-w-sm">
+                    <h2 className="text-lg font-bold">Todavía no has dado de alta tu negocio</h2>
+                    <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                      Crea tu ficha de empresa para aparecer en el listado de negocios y en el mapa
+                      del Valle.
+                    </p>
+                  </div>
+                  <MiNegocioDialog>
+                    <button className="mt-1 inline-flex items-center gap-2 rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90">
+                      <PlusCircle className="size-4" />
+                      Añadir mi negocio
+                    </button>
+                  </MiNegocioDialog>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </main>
       <Footer />
