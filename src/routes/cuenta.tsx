@@ -25,6 +25,7 @@ import { fetchMiNegocio, subirArchivoNegocio, type Negocio } from "@/lib/negocio
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Footer";
 import { MiNegocioDialog } from "@/components/site/MiNegocioDialog";
+import heroValle from "@/assets/hero-valle.jpg";
 
 const ROLE_LABEL: Record<"cliente" | "comercio", string> = {
   cliente: "Visitante",
@@ -128,26 +129,31 @@ function CuentaPage() {
     <>
       <Navbar />
       <main className="min-h-screen bg-background">
-        <div className="container-page max-w-2xl pb-24 pt-28 sm:pt-32">
-          <div className="flex items-center justify-between">
+        <div className="relative h-48 w-full overflow-hidden sm:h-64">
+          <img src={heroValle} alt="" className="absolute inset-0 size-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[oklch(0.14_0.02_60/0.65)] via-[oklch(0.14_0.02_60/0.2)] to-[var(--background)]" />
+
+          <div className="container-page relative flex max-w-2xl items-center justify-between gap-4 pt-24 sm:pt-28">
             <Link
               to="/"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-primary-foreground/90 transition-colors hover:text-primary-foreground"
             >
               <ArrowLeft className="size-4" />
               Volver al Valle
             </Link>
             <button
               onClick={() => void signOut()}
-              className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-primary-foreground/90 transition-colors hover:text-primary-foreground"
             >
               <LogOut className="size-4" />
               Cerrar sesión
             </button>
           </div>
+        </div>
 
+        <div className="container-page max-w-2xl pb-24">
           {/* Identidad */}
-          <div className="mx-auto mt-14 flex max-w-sm animate-in fade-in slide-in-from-bottom-3 flex-col items-center text-center duration-700 sm:mt-20">
+          <div className="mx-auto -mt-12 flex max-w-sm animate-in fade-in slide-in-from-bottom-3 flex-col items-center text-center duration-700 sm:-mt-14">
             <div className="group relative">
               {profile?.avatar_url ? (
                 <img
@@ -155,10 +161,10 @@ function CuentaPage() {
                   alt={profile.nombre}
                   width={96}
                   height={96}
-                  className="size-24 rounded-full object-cover shadow-soft ring-4 ring-card transition-transform duration-300 group-hover:scale-[1.03]"
+                  className="size-24 rounded-full object-cover shadow-lift ring-4 ring-background transition-transform duration-300 group-hover:scale-[1.03]"
                 />
               ) : (
-                <div className="flex size-24 items-center justify-center rounded-full bg-secondary shadow-soft ring-4 ring-card transition-transform duration-300 group-hover:scale-[1.03]">
+                <div className="flex size-24 items-center justify-center rounded-full bg-secondary shadow-lift ring-4 ring-background transition-transform duration-300 group-hover:scale-[1.03]">
                   <UserRound className="size-9 text-muted-foreground" />
                 </div>
               )}
@@ -169,14 +175,20 @@ function CuentaPage() {
                 aria-label="Cambiar foto de perfil"
                 className="absolute inset-0 flex items-center justify-center rounded-full bg-[oklch(0.14_0.02_60/0.55)] text-primary-foreground opacity-0 backdrop-blur-[1px] transition-opacity duration-200 group-hover:opacity-100 disabled:opacity-100"
               >
-                {uploadingAvatar ? (
+                {uploadingAvatar && (
                   <span className="text-[0.65rem] font-semibold uppercase tracking-widest">
                     Subiendo…
                   </span>
-                ) : (
-                  <Camera className="size-6" />
                 )}
               </button>
+              {!uploadingAvatar && (
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute -bottom-1 -right-1 flex size-7 items-center justify-center rounded-full border-2 border-background bg-accent text-accent-foreground shadow-soft"
+                >
+                  <Camera className="size-3.5" />
+                </span>
+              )}
               <input
                 ref={avatarInputRef}
                 type="file"
@@ -205,16 +217,16 @@ function CuentaPage() {
                   }}
                   autoFocus
                   disabled={savingNombre}
-                  className="min-w-0 max-w-full border-b-2 border-forest bg-transparent px-1 text-center font-serif text-3xl font-semibold leading-tight text-foreground outline-none disabled:opacity-60"
+                  className="min-w-0 max-w-full border-b-2 border-forest bg-transparent px-1 text-center font-serif text-2xl font-semibold leading-tight text-foreground outline-none disabled:opacity-60 sm:text-3xl"
                   style={{ width: `${Math.max(nombre.length, 3)}ch` }}
                 />
               ) : (
                 <button
                   type="button"
                   onClick={() => setEditingNombre(true)}
-                  className="group/name inline-flex items-center gap-2 rounded-lg px-1 font-serif text-3xl font-semibold leading-tight text-foreground transition-opacity hover:opacity-80"
+                  className="group/name inline-flex max-w-full items-center gap-2 rounded-lg px-1 text-center font-serif text-2xl font-semibold leading-tight text-foreground transition-opacity hover:opacity-80 sm:text-3xl"
                 >
-                  {profile?.nombre ?? user.email}
+                  <span className="truncate">{profile?.nombre ?? user.email}</span>
                   <Pencil className="size-4 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover/name:opacity-100" />
                 </button>
               )}
