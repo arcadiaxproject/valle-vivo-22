@@ -106,3 +106,25 @@ export async function contarFavoritosDeNegocio(negocioId: string): Promise<numbe
   if (error) throw error;
   return count ?? 0;
 }
+
+// Solo el administrador ve algo distinto aquí: gracias a RLS, para el resto
+// de usuarios esta consulta ya viene filtrada a sus propios negocios y a
+// los aprobados.
+export async function fetchNegociosAdmin(): Promise<Negocio[]> {
+  const { data, error } = await supabase
+    .from("negocios")
+    .select("*")
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return data;
+}
+
+export async function aprobarNegocio(id: string): Promise<void> {
+  const { error } = await supabase.from("negocios").update({ aprobado: true }).eq("id", id);
+  if (error) throw error;
+}
+
+export async function retirarNegocio(id: string): Promise<void> {
+  const { error } = await supabase.from("negocios").update({ aprobado: false }).eq("id", id);
+  if (error) throw error;
+}

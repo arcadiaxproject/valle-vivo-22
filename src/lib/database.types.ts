@@ -25,6 +25,7 @@ export type Database = {
           facebook: string | null;
           whatsapp: string | null;
           horario: string | null;
+          aprobado: boolean;
           created_at: string;
         };
         Insert: {
@@ -50,6 +51,7 @@ export type Database = {
           facebook?: string | null;
           whatsapp?: string | null;
           horario?: string | null;
+          aprobado?: boolean;
           created_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["negocios"]["Insert"]>;
@@ -85,6 +87,7 @@ export type Database = {
           role: "cliente" | "comercio" | null;
           distintivo: boolean;
           municipio: string | null;
+          es_admin: boolean;
           created_at: string;
         };
         Insert: {
@@ -94,6 +97,7 @@ export type Database = {
           role?: "cliente" | "comercio" | null;
           distintivo?: boolean;
           municipio?: string | null;
+          es_admin?: boolean;
           created_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["profiles"]["Insert"]>;

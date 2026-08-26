@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Menu, UserRound, X } from "lucide-react";
+import { Menu, ShieldCheck, UserRound, X } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 
 const links = [
@@ -66,36 +66,49 @@ function AuthControls({ solid }: { solid: boolean }) {
   }
 
   return (
-    <Link
-      to="/cuenta"
-      className="flex items-center gap-3 rounded-lg transition-opacity hover:opacity-70"
-      aria-label="Ver mi cuenta"
-    >
-      {profile?.avatar_url ? (
-        <img
-          src={profile.avatar_url}
-          alt={profile.nombre}
-          width={32}
-          height={32}
-          className={`size-8 rounded-full object-cover ring-2 ${solid ? "ring-secondary" : "ring-primary-foreground/40"}`}
-        />
-      ) : (
-        <div
-          className={`flex size-8 items-center justify-center rounded-full ring-2 ${
-            solid
-              ? "bg-secondary ring-secondary text-muted-foreground"
-              : "bg-primary-foreground/15 ring-primary-foreground/40 text-primary-foreground"
+    <div className="flex items-center gap-4">
+      {profile?.es_admin && (
+        <Link
+          to="/admin"
+          className={`inline-flex items-center gap-1.5 text-sm font-semibold transition-opacity hover:opacity-70 ${
+            solid ? "text-foreground" : "text-primary-foreground"
           }`}
         >
-          <UserRound className="size-4" />
-        </div>
+          <ShieldCheck className="size-4" />
+          Admin
+        </Link>
       )}
-      <span
-        className={`text-sm font-semibold ${solid ? "text-foreground" : "text-primary-foreground"}`}
+      <Link
+        to="/cuenta"
+        className="flex items-center gap-3 rounded-lg transition-opacity hover:opacity-70"
+        aria-label="Ver mi cuenta"
       >
-        {profile?.nombre ?? user.email}
-      </span>
-    </Link>
+        {profile?.avatar_url ? (
+          <img
+            src={profile.avatar_url}
+            alt={profile.nombre}
+            width={32}
+            height={32}
+            className={`size-8 rounded-full object-cover ring-2 ${solid ? "ring-secondary" : "ring-primary-foreground/40"}`}
+          />
+        ) : (
+          <div
+            className={`flex size-8 items-center justify-center rounded-full ring-2 ${
+              solid
+                ? "bg-secondary ring-secondary text-muted-foreground"
+                : "bg-primary-foreground/15 ring-primary-foreground/40 text-primary-foreground"
+            }`}
+          >
+            <UserRound className="size-4" />
+          </div>
+        )}
+        <span
+          className={`text-sm font-semibold ${solid ? "text-foreground" : "text-primary-foreground"}`}
+        >
+          {profile?.nombre ?? user.email}
+        </span>
+      </Link>
+    </div>
   );
 }
 
