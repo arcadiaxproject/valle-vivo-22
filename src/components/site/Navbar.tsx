@@ -66,7 +66,7 @@ function AuthControls({ solid, mobile = false }: { solid: boolean; mobile?: bool
   }
 
   return (
-    <div className="flex items-center gap-4">
+    <div className={mobile ? "flex flex-col items-start gap-3" : "flex items-center gap-4"}>
       {profile?.es_admin && (
         <Link
           to="/admin"
