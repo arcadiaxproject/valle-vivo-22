@@ -34,7 +34,7 @@ function GoogleIcon() {
   );
 }
 
-function AuthControls({ solid }: { solid: boolean }) {
+function AuthControls({ solid, mobile = false }: { solid: boolean; mobile?: boolean }) {
   const { user, profile, loading, signInWithGoogle, signOut } = useAuth();
 
   if (loading) return null;
@@ -83,38 +83,50 @@ function AuthControls({ solid }: { solid: boolean }) {
         className="flex items-center gap-3 rounded-lg transition-opacity hover:opacity-70"
         aria-label="Ver mi cuenta"
       >
-        {profile?.avatar_url ? (
-          <img
-            src={profile.avatar_url}
-            alt={profile.nombre}
-            width={32}
-            height={32}
-            className={`size-8 rounded-full object-cover ring-2 ${solid ? "ring-secondary" : "ring-primary-foreground/40"}`}
-          />
-        ) : (
-          <div
-            className={`flex size-8 items-center justify-center rounded-full ring-2 ${
-              solid
-                ? "bg-secondary ring-secondary text-muted-foreground"
-                : "bg-primary-foreground/15 ring-primary-foreground/40 text-primary-foreground"
-            }`}
+        {mobile ? (
+          <span
+            className={`text-sm font-semibold ${solid ? "text-foreground" : "text-primary-foreground"}`}
           >
-            <UserRound className="size-4" />
-          </div>
+            Perfil
+          </span>
+        ) : (
+          <>
+            {profile?.avatar_url ? (
+              <img
+                src={profile.avatar_url}
+                alt={profile.nombre}
+                width={32}
+                height={32}
+                className={`size-8 rounded-full object-cover ring-2 ${solid ? "ring-secondary" : "ring-primary-foreground/40"}`}
+              />
+            ) : (
+              <div
+                className={`flex size-8 items-center justify-center rounded-full ring-2 ${
+                  solid
+                    ? "bg-secondary ring-secondary text-muted-foreground"
+                    : "bg-primary-foreground/15 ring-primary-foreground/40 text-primary-foreground"
+                }`}
+              >
+                <UserRound className="size-4" />
+              </div>
+            )}
+            <span
+              className={`text-sm font-semibold ${solid ? "text-foreground" : "text-primary-foreground"}`}
+            >
+              {profile?.nombre ?? user.email}
+            </span>
+          </>
         )}
-        <span
-          className={`text-sm font-semibold ${solid ? "text-foreground" : "text-primary-foreground"}`}
-        >
-          {profile?.nombre ?? user.email}
-        </span>
       </Link>
       <button
         onClick={() => void signOut()}
         aria-label="Cerrar sesión"
         title="Cerrar sesión"
-        className={`transition-opacity hover:opacity-70 ${solid ? "text-muted-foreground" : "text-primary-foreground/80"}`}
+        className={`transition-opacity hover:opacity-70 ${solid ? "text-muted-foreground" : "text-primary-foreground/80"} ${
+          mobile ? "text-sm font-semibold" : ""
+        }`}
       >
-        <LogOut className="size-4" />
+        {mobile ? "Salir" : <LogOut className="size-4" />}
       </button>
     </div>
   );
@@ -196,7 +208,7 @@ export function Navbar() {
             ))}
           </ul>
           <div className="mt-4">
-            <AuthControls solid />
+            <AuthControls solid mobile />
           </div>
         </div>
       )}
