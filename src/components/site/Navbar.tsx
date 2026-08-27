@@ -65,8 +65,36 @@ function AuthControls({ solid, mobile = false }: { solid: boolean; mobile?: bool
     );
   }
 
+  if (mobile) {
+    return (
+      <div className="grid gap-1">
+        {profile?.es_admin && (
+          <Link
+            to="/admin"
+            className="flex items-center gap-2 rounded-lg px-2 py-3 text-sm font-semibold text-foreground hover:bg-secondary"
+          >
+            <ShieldCheck className="size-4" />
+            Admin
+          </Link>
+        )}
+        <Link
+          to="/cuenta"
+          className="block rounded-lg px-2 py-3 text-sm font-semibold text-foreground hover:bg-secondary"
+        >
+          Perfil
+        </Link>
+        <button
+          onClick={() => void signOut()}
+          className="block rounded-lg px-2 py-3 text-left text-sm font-semibold text-foreground hover:bg-secondary"
+        >
+          Salir
+        </button>
+      </div>
+    );
+  }
+
   return (
-    <div className={mobile ? "flex flex-col items-start gap-3" : "flex items-center gap-4"}>
+    <div className="flex items-center gap-4">
       {profile?.es_admin && (
         <Link
           to="/admin"
@@ -83,50 +111,38 @@ function AuthControls({ solid, mobile = false }: { solid: boolean; mobile?: bool
         className="flex items-center gap-3 rounded-lg transition-opacity hover:opacity-70"
         aria-label="Ver mi cuenta"
       >
-        {mobile ? (
-          <span
-            className={`text-sm font-semibold ${solid ? "text-foreground" : "text-primary-foreground"}`}
-          >
-            Perfil
-          </span>
+        {profile?.avatar_url ? (
+          <img
+            src={profile.avatar_url}
+            alt={profile.nombre}
+            width={32}
+            height={32}
+            className={`size-8 rounded-full object-cover ring-2 ${solid ? "ring-secondary" : "ring-primary-foreground/40"}`}
+          />
         ) : (
-          <>
-            {profile?.avatar_url ? (
-              <img
-                src={profile.avatar_url}
-                alt={profile.nombre}
-                width={32}
-                height={32}
-                className={`size-8 rounded-full object-cover ring-2 ${solid ? "ring-secondary" : "ring-primary-foreground/40"}`}
-              />
-            ) : (
-              <div
-                className={`flex size-8 items-center justify-center rounded-full ring-2 ${
-                  solid
-                    ? "bg-secondary ring-secondary text-muted-foreground"
-                    : "bg-primary-foreground/15 ring-primary-foreground/40 text-primary-foreground"
-                }`}
-              >
-                <UserRound className="size-4" />
-              </div>
-            )}
-            <span
-              className={`text-sm font-semibold ${solid ? "text-foreground" : "text-primary-foreground"}`}
-            >
-              {profile?.nombre ?? user.email}
-            </span>
-          </>
+          <div
+            className={`flex size-8 items-center justify-center rounded-full ring-2 ${
+              solid
+                ? "bg-secondary ring-secondary text-muted-foreground"
+                : "bg-primary-foreground/15 ring-primary-foreground/40 text-primary-foreground"
+            }`}
+          >
+            <UserRound className="size-4" />
+          </div>
         )}
+        <span
+          className={`text-sm font-semibold ${solid ? "text-foreground" : "text-primary-foreground"}`}
+        >
+          {profile?.nombre ?? user.email}
+        </span>
       </Link>
       <button
         onClick={() => void signOut()}
         aria-label="Cerrar sesión"
         title="Cerrar sesión"
-        className={`transition-opacity hover:opacity-70 ${solid ? "text-muted-foreground" : "text-primary-foreground/80"} ${
-          mobile ? "text-sm font-semibold" : ""
-        }`}
+        className={`transition-opacity hover:opacity-70 ${solid ? "text-muted-foreground" : "text-primary-foreground/80"}`}
       >
-        {mobile ? "Salir" : <LogOut className="size-4" />}
+        <LogOut className="size-4" />
       </button>
     </div>
   );
@@ -168,7 +184,7 @@ export function Navbar() {
               <Link
                 to="/"
                 hash={l.hash}
-                className={`text-sm font-medium transition-opacity hover:opacity-70 ${
+                className={`text-sm font-semibold transition-opacity hover:opacity-70 ${
                   solid ? "text-foreground" : "text-primary-foreground"
                 }`}
               >
@@ -200,7 +216,7 @@ export function Navbar() {
                   to="/"
                   hash={l.hash}
                   onClick={() => setOpen(false)}
-                  className="block rounded-lg px-2 py-3 text-base font-medium text-foreground hover:bg-secondary"
+                  className="block rounded-lg px-2 py-3 text-sm font-semibold text-foreground hover:bg-secondary"
                 >
                   {l.label}
                 </Link>
