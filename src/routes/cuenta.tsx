@@ -25,6 +25,7 @@ import {
   UserRound,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
+import { fechaCorta, fechaRelativa } from "@/lib/format";
 import {
   MUNICIPIOS_DISPONIBLES,
   contarFavoritosDeNegocio,
@@ -56,22 +57,6 @@ const CATEGORIA_ACENTOS: Record<string, string> = {
   "Qué hacer": "#4c6a3f",
   "Comercio local": "#b9902e",
 };
-
-function fechaCorta(iso: string) {
-  return new Date(iso).toLocaleDateString("es-ES", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-}
-
-function fechaRelativa(iso: string) {
-  const dias = Math.floor((Date.now() - new Date(iso).getTime()) / 86_400_000);
-  if (dias <= 0) return "Hoy";
-  if (dias === 1) return "Ayer";
-  if (dias < 30) return `Hace ${dias} días`;
-  return fechaCorta(iso);
-}
 
 export const Route = createFileRoute("/cuenta")({
   head: () => ({ meta: [{ title: "Mi cuenta — Salvar el valle" }] }),
