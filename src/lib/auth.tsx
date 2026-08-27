@@ -24,7 +24,17 @@ type AuthContextValue = {
   signOut: () => Promise<void>;
   setRole: (role: "cliente" | "comercio") => Promise<void>;
   updateProfile: (
-    updates: Partial<Pick<Profile, "nombre" | "avatar_url" | "municipio">>,
+    updates: Partial<
+      Pick<
+        Profile,
+        | "nombre"
+        | "avatar_url"
+        | "municipio"
+        | "fecha_nacimiento"
+        | "pueblo_interes"
+        | "interes_principal"
+      >
+    >,
   ) => Promise<void>;
 };
 
@@ -99,7 +109,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function updateProfile(
-    updates: Partial<Pick<Profile, "nombre" | "avatar_url" | "municipio">>,
+    updates: Partial<
+      Pick<
+        Profile,
+        | "nombre"
+        | "avatar_url"
+        | "municipio"
+        | "fecha_nacimiento"
+        | "pueblo_interes"
+        | "interes_principal"
+      >
+    >,
   ) {
     if (!session?.user) return;
     const { data, error } = await supabase

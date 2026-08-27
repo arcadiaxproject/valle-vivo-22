@@ -14,6 +14,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AuthProvider } from "../lib/auth";
 import { RoleGate } from "../components/site/RoleGate";
 import { NegocioGate } from "../components/site/NegocioGate";
+import { VisitanteGate } from "../components/site/VisitanteGate";
 import { Toaster } from "../components/ui/sonner";
 
 function NotFoundComponent() {
@@ -143,6 +144,7 @@ function RootComponent() {
         <Outlet />
         <RoleGate />
         <NegocioGate />
+        <VisitanteGate />
         <Toaster />
       </AuthProvider>
     </QueryClientProvider>

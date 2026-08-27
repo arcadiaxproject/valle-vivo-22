@@ -88,6 +88,10 @@ export type Database = {
           distintivo: boolean;
           municipio: string | null;
           es_admin: boolean;
+          fecha_nacimiento: string | null;
+          pueblo_interes: string | null;
+          interes_principal: string | null;
+          email: string | null;
           created_at: string;
         };
         Insert: {
@@ -98,6 +102,10 @@ export type Database = {
           distintivo?: boolean;
           municipio?: string | null;
           es_admin?: boolean;
+          fecha_nacimiento?: string | null;
+          pueblo_interes?: string | null;
+          interes_principal?: string | null;
+          email?: string | null;
           created_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["profiles"]["Insert"]>;

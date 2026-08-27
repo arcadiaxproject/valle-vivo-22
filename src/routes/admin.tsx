@@ -290,6 +290,7 @@ function FilaUsuario({
             {u.nombre}
             {esUnoMismo && <span className="ml-1.5 text-xs text-muted-foreground">(tú)</span>}
           </p>
+          {u.email && <p className="truncate text-xs text-muted-foreground">{u.email}</p>}
           <p className="text-xs text-muted-foreground">
             {u.role === "comercio" ? "Negocio" : u.role === "cliente" ? "Visitante" : "Sin rol"} ·
             desde {new Date(u.created_at).toLocaleDateString("es-ES")}
