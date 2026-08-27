@@ -14,7 +14,6 @@ import {
   Heart,
   Images,
   Instagram,
-  LogOut,
   Mail,
   MapPin,
   MessageCircle,
@@ -80,7 +79,7 @@ export const Route = createFileRoute("/cuenta")({
 });
 
 function CuentaPage() {
-  const { user, profile, loading, signOut } = useAuth();
+  const { user, profile, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -105,7 +104,7 @@ function CuentaPage() {
         <div className="fixed inset-0 -z-10 bg-[oklch(0.14_0.02_60/0.45)]" />
 
         <div className="container-page relative pt-24 sm:pt-28">
-          <div className="mx-auto flex max-w-4xl items-center justify-between gap-4">
+          <div className="mx-auto flex max-w-4xl items-center gap-4">
             <Link
               to="/"
               className="inline-flex items-center gap-2 text-sm font-semibold text-primary-foreground/90 transition-colors hover:text-primary-foreground"
@@ -113,13 +112,6 @@ function CuentaPage() {
               <ArrowLeft className="size-4" />
               Volver al Valle
             </Link>
-            <button
-              onClick={() => void signOut()}
-              className="inline-flex items-center gap-2 text-sm font-semibold text-primary-foreground/90 transition-colors hover:text-primary-foreground"
-            >
-              <LogOut className="size-4" />
-              Cerrar sesión
-            </button>
           </div>
         </div>
 

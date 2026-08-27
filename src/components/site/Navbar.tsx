@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Menu, ShieldCheck, UserRound, X } from "lucide-react";
+import { LogOut, Menu, ShieldCheck, UserRound, X } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 
 const links = [
@@ -35,7 +35,7 @@ function GoogleIcon() {
 }
 
 function AuthControls({ solid }: { solid: boolean }) {
-  const { user, profile, loading, signInWithGoogle } = useAuth();
+  const { user, profile, loading, signInWithGoogle, signOut } = useAuth();
 
   if (loading) return null;
 
@@ -108,6 +108,14 @@ function AuthControls({ solid }: { solid: boolean }) {
           {profile?.nombre ?? user.email}
         </span>
       </Link>
+      <button
+        onClick={() => void signOut()}
+        aria-label="Cerrar sesión"
+        title="Cerrar sesión"
+        className={`transition-opacity hover:opacity-70 ${solid ? "text-muted-foreground" : "text-primary-foreground/80"}`}
+      >
+        <LogOut className="size-4" />
+      </button>
     </div>
   );
 }
