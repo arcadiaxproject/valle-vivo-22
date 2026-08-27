@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AuthProvider } from "../lib/auth";
 import { RoleGate } from "../components/site/RoleGate";
+import { NegocioGate } from "../components/site/NegocioGate";
 import { Toaster } from "../components/ui/sonner";
 
 function NotFoundComponent() {
@@ -141,6 +142,7 @@ function RootComponent() {
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
         <RoleGate />
+        <NegocioGate />
         <Toaster />
       </AuthProvider>
     </QueryClientProvider>

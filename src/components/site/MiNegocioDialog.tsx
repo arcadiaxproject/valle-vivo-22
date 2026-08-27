@@ -33,10 +33,18 @@ import {
 
 type Ubicacion = { direccion: string; lat: number; lng: number };
 
-export function MiNegocioDialog({ children }: { children: ReactNode }) {
+export function MiNegocioDialog({
+  children,
+  defaultOpen = false,
+  forzado = false,
+}: {
+  children?: ReactNode;
+  defaultOpen?: boolean;
+  forzado?: boolean;
+}) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
   const [saving, setSaving] = useState(false);
 
   const { data: negocio } = useQuery({
@@ -230,12 +238,23 @@ export function MiNegocioDialog({ children }: { children: ReactNode }) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-lg">
+      {children && <DialogTrigger asChild>{children}</DialogTrigger>}
+      <DialogContent
+        className="max-h-[85vh] overflow-y-auto sm:max-w-lg"
+        hideClose={forzado}
+        {...(forzado
+          ? {
+              onInteractOutside: (e) => e.preventDefault(),
+              onEscapeKeyDown: (e) => e.preventDefault(),
+            }
+          : {})}
+      >
         <DialogHeader>
-          <DialogTitle>Mi negocio</DialogTitle>
+          <DialogTitle>{forzado ? "Cuéntanos sobre tu negocio" : "Mi negocio"}</DialogTitle>
           <DialogDescription>
-            Esta información aparecerá en el listado de negocios y en el mapa del Valle.
+            {forzado
+              ? "Para terminar de registrarte como negocio, danos estos datos básicos. Podrás completarlos con fotos y más detalles después."
+              : "Esta información aparecerá en el listado de negocios y en el mapa del Valle."}
           </DialogDescription>
         </DialogHeader>
 
