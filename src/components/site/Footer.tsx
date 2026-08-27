@@ -16,7 +16,9 @@ export function Footer() {
         <div className="flex items-center gap-3">
           <p className="text-sm font-bold text-primary">Salvar el valle</p>
           <a
-            href="https://instagram.com"
+            href="https://instagram.com/salvar_valle_tietar"
+            target="_blank"
+            rel="noreferrer"
             aria-label="Instagram"
             className="inline-flex size-8 items-center justify-center rounded-lg border border-border text-foreground transition-colors duration-200 hover:bg-secondary"
           >
